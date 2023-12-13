@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/handlers"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/handlers"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

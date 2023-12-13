@@ -8,8 +8,8 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	kratosClient "github.com/ory/kratos-client-go"
 
-	"github.com/pluralsh/trace-shield/consts"
-	"github.com/pluralsh/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/consts"
+	"github.com/traceshield/trace-shield/graph/common"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"

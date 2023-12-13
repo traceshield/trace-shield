@@ -14,12 +14,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/cors"
 
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/graph/directives"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/resolvers"
-	"github.com/pluralsh/trace-shield/handlers"
 	"github.com/ravilushqa/otelgqlgen"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/directives"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/resolvers"
+	"github.com/traceshield/trace-shield/handlers"
 	"go.opentelemetry.io/otel"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"

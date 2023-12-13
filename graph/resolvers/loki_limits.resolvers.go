@@ -7,8 +7,8 @@ package resolvers
 import (
 	"context"
 
-	"github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
-	"github.com/pluralsh/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/graph/generated"
 )
 
 // Types is the resolver for the types field.

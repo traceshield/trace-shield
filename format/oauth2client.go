@@ -2,7 +2,7 @@ package format
 
 import (
 	hydra "github.com/ory/hydra-client-go/v2"
-	"github.com/pluralsh/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/model"
 )
 
 // function to convert a hydra OAuth2Client to a GraphQL OAuth2Client

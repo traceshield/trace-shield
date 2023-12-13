@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	kratos "github.com/ory/kratos-client-go"
-	"github.com/pluralsh/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/common"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

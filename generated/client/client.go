@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/Yamashou/gqlgenc/clientv2"
-	"github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
-	"github.com/pluralsh/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/graph/model"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

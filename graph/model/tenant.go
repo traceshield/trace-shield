@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
-	observabilityv1alpha1 "github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
-	"github.com/pluralsh/trace-shield/consts"
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/utils"
+	observabilityv1alpha1 "github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/consts"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/utils"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

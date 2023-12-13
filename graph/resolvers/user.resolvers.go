@@ -9,10 +9,10 @@ import (
 	"fmt"
 
 	kratos "github.com/ory/kratos-client-go"
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/model"
-	"github.com/pluralsh/trace-shield/graph/resolvers/helpers"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/resolvers/helpers"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

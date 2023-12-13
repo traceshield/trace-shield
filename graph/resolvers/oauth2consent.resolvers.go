@@ -10,11 +10,11 @@ import (
 	"net/http"
 
 	hydra "github.com/ory/hydra-client-go/v2"
-	"github.com/pluralsh/trace-shield/format"
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/graph/model"
-	"github.com/pluralsh/trace-shield/handlers"
-	"github.com/pluralsh/trace-shield/utils"
+	"github.com/traceshield/trace-shield/format"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/handlers"
+	"github.com/traceshield/trace-shield/utils"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

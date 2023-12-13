@@ -8,12 +8,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pluralsh/trace-shield/format"
-	"github.com/pluralsh/trace-shield/graph/common"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/model"
-	"github.com/pluralsh/trace-shield/graph/resolvers/helpers"
-	"github.com/pluralsh/trace-shield/utils"
+	"github.com/traceshield/trace-shield/format"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/resolvers/helpers"
+	"github.com/traceshield/trace-shield/utils"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )

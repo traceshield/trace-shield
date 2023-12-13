@@ -7,7 +7,7 @@ import (
 	"github.com/go-logr/logr"
 	hydra "github.com/ory/hydra-client-go/v2"
 	kratos "github.com/ory/kratos-client-go"
-	controller "github.com/pluralsh/trace-shield-controller/generated/client/clientset/versioned"
+	controller "github.com/traceshield/trace-shield-controller/generated/client/clientset/versioned"
 	"go.opentelemetry.io/otel/trace"
 )
 

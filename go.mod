@@ -1,4 +1,4 @@
-module github.com/pluralsh/trace-shield
+module github.com/traceshield/trace-shield
 
 go 1.20
 
@@ -9,9 +9,9 @@ require (
 	github.com/go-logr/logr v1.2.4
 	github.com/ory/keto/proto v0.11.1-alpha.0
 	github.com/ory/kratos-client-go v0.13.1
-	github.com/pluralsh/trace-shield-controller v0.3.24
 	github.com/ravilushqa/otelgqlgen v0.13.1
 	github.com/rs/cors v1.9.0
+	github.com/traceshield/trace-shield-controller v0.3.26
 	github.com/vektah/gqlparser/v2 v2.5.6
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0
 	go.opentelemetry.io/contrib/propagators/jaeger v1.17.0

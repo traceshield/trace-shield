@@ -3,7 +3,7 @@ package common
 import (
 	"net/http"
 
-	controller "github.com/pluralsh/trace-shield-controller/generated/client/clientset/versioned"
+	controller "github.com/traceshield/trace-shield-controller/generated/client/clientset/versioned"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 
