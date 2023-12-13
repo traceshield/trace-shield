@@ -8,7 +8,9 @@ import (
 	rts "github.com/ory/keto/proto/ory/keto/relation_tuples/v1alpha2"
 	kratosClient "github.com/ory/kratos-client-go"
 
-	"github.com/pluralsh/trace-shield/consts"
+	"github.com/traceshield/trace-shield/consts"
+	"github.com/traceshield/trace-shield/graph/common"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
@@ -44,14 +46,15 @@ type User struct {
 }
 
 // Middleware decodes the share session cookie and packs the session into context
-func (h *Handler) Middleware() func(http.Handler) http.Handler {
+func Middleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			log := h.Log.WithName("Middleware")
-
-			// ctx := h.Propagators.Extract(r.Context(), propagation.HeaderCarrier(r.Header))
 			ctx := r.Context()
-			ctx, span := h.C.Tracer.Start(ctx, "AuthenticationMiddleware")
+			clients := common.GetContext(ctx)
+
+			log := clients.Log.WithName("Middleware")
+
+			ctx, span := clients.Tracer.Start(ctx, "AuthenticationMiddleware")
 			defer span.End()
 
 			cookie, err := r.Cookie("ory_kratos_session")
@@ -69,7 +72,7 @@ func (h *Handler) Middleware() func(http.Handler) http.Handler {
 			// log.Info(fmt.Sprintf("Cookie: %s", cookie.String()))
 			var resp *kratosClient.Session
 			if cookie != nil {
-				clientResp, req, err := h.C.KratosPublicClient.FrontendApi.ToSession(ctx).Cookie(cookie.String()).Execute()
+				clientResp, req, err := clients.KratosPublicClient.FrontendApi.ToSession(ctx).Cookie(cookie.String()).Execute()
 				if err != nil {
 					// TODO: should we return here?
 					log.Error(err, fmt.Sprintf("Error when calling `V0alpha2Api.ToSession``: %v\n", err))
@@ -81,7 +84,7 @@ func (h *Handler) Middleware() func(http.Handler) http.Handler {
 				}
 				resp = clientResp
 			} else if sessionHeader != "" {
-				clientResp, req, err := h.C.KratosPublicClient.FrontendApi.ToSession(ctx).XSessionToken(sessionHeader).Execute()
+				clientResp, req, err := clients.KratosPublicClient.FrontendApi.ToSession(ctx).XSessionToken(sessionHeader).Execute()
 				if err != nil {
 					// TODO: should we return here?
 					log.Error(err, fmt.Sprintf("Error when calling `V0alpha2Api.ToSession``: %v\n", err))
@@ -153,7 +156,7 @@ func (h *Handler) Middleware() func(http.Handler) http.Handler {
 				),
 			}
 
-			isAdmin, err := h.C.KetoClient.Check(ctx, &adminQuery)
+			isAdmin, err := clients.KetoClient.Check(ctx, &adminQuery)
 			if err != nil {
 				span.RecordError(err)
 				span.SetStatus(codes.Error, err.Error())
@@ -181,7 +184,8 @@ func (h *Handler) Middleware() func(http.Handler) http.Handler {
 			// and call the next with our new context
 			log.Info("Success auth", "user", user.Email)
 			r = r.WithContext(ctx)
-			h.Propagators.Inject(ctx, propagation.HeaderCarrier(r.Header))
+			propagators := otel.GetTextMapPropagator()
+			propagators.Inject(ctx, propagation.HeaderCarrier(r.Header))
 			next.ServeHTTP(w, r)
 		})
 	}

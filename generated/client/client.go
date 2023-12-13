@@ -8,14 +8,16 @@ import (
 	"time"
 
 	"github.com/Yamashou/gqlgenc/clientv2"
-	"github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
-	"github.com/pluralsh/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/graph/model"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type TraceShieldGraphQLClient interface {
+	GetGroup(ctx context.Context, name string, interceptors ...clientv2.RequestInterceptor) (*GetGroup, error)
 	ListGroups(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*ListGroups, error)
 	UpdateGroup(ctx context.Context, name string, members []*model.UserInput, interceptors ...clientv2.RequestInterceptor) (*UpdateGroup, error)
+	CreateGroup(ctx context.Context, name string, members []*model.UserInput, interceptors ...clientv2.RequestInterceptor) (*CreateGroup, error)
 	DeleteGroup(ctx context.Context, name string, interceptors ...clientv2.RequestInterceptor) (*DeleteGroup, error)
 	ListOAuth2Clients(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*ListOAuth2Clients, error)
 	GetOAuth2Client(ctx context.Context, clientID string, interceptors ...clientv2.RequestInterceptor) (*GetOAuth2Client, error)
@@ -51,6 +53,7 @@ type Query struct {
 	ListUsers                []*model.User                "json:\"listUsers\" graphql:\"listUsers\""
 	GetUser                  model.User                   "json:\"getUser\" graphql:\"getUser\""
 	ListGroups               []*model.Group               "json:\"listGroups,omitempty\" graphql:\"listGroups\""
+	GetGroup                 model.Group                  "json:\"getGroup\" graphql:\"getGroup\""
 	ListOAuth2Clients        []*model.OAuth2Client        "json:\"listOAuth2Clients\" graphql:\"listOAuth2Clients\""
 	GetOAuth2Client          *model.OAuth2Client          "json:\"getOAuth2Client,omitempty\" graphql:\"getOAuth2Client\""
 	Oauth2ConsentRequest     *model.OAuth2ConsentRequest  "json:\"oauth2ConsentRequest,omitempty\" graphql:\"oauth2ConsentRequest\""
@@ -62,7 +65,8 @@ type Query struct {
 type Mutation struct {
 	CreateUser                 model.User                "json:\"createUser\" graphql:\"createUser\""
 	DeleteUser                 model.User                "json:\"deleteUser\" graphql:\"deleteUser\""
-	Group                      model.Group               "json:\"group\" graphql:\"group\""
+	CreateGroup                model.Group               "json:\"createGroup\" graphql:\"createGroup\""
+	UpdateGroup                model.Group               "json:\"updateGroup\" graphql:\"updateGroup\""
 	DeleteGroup                model.Group               "json:\"deleteGroup\" graphql:\"deleteGroup\""
 	CreateOAuth2Client         model.OAuth2Client        "json:\"createOAuth2Client\" graphql:\"createOAuth2Client\""
 	UpdateOAuth2Client         model.OAuth2Client        "json:\"updateOAuth2Client\" graphql:\"updateOAuth2Client\""
@@ -4683,6 +4687,24 @@ func (t *UserFragmentNoGroups_Name) GetLast() *string {
 	return t.Last
 }
 
+type GetGroup_GetGroup_GroupFragment_Members_UserFragmentNoGroups_Name struct {
+	First *string "json:\"first,omitempty\" graphql:\"first\""
+	Last  *string "json:\"last,omitempty\" graphql:\"last\""
+}
+
+func (t *GetGroup_GetGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetFirst() *string {
+	if t == nil {
+		t = &GetGroup_GetGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
+	}
+	return t.First
+}
+func (t *GetGroup_GetGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetLast() *string {
+	if t == nil {
+		t = &GetGroup_GetGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
+	}
+	return t.Last
+}
+
 type ListGroups_ListGroups_GroupFragment_Members_UserFragmentNoGroups_Name struct {
 	First *string "json:\"first,omitempty\" graphql:\"first\""
 	Last  *string "json:\"last,omitempty\" graphql:\"last\""
@@ -4701,20 +4723,38 @@ func (t *ListGroups_ListGroups_GroupFragment_Members_UserFragmentNoGroups_Name) 
 	return t.Last
 }
 
-type UpdateGroup_Group_GroupFragment_Members_UserFragmentNoGroups_Name struct {
+type UpdateGroup_UpdateGroup_GroupFragment_Members_UserFragmentNoGroups_Name struct {
 	First *string "json:\"first,omitempty\" graphql:\"first\""
 	Last  *string "json:\"last,omitempty\" graphql:\"last\""
 }
 
-func (t *UpdateGroup_Group_GroupFragment_Members_UserFragmentNoGroups_Name) GetFirst() *string {
+func (t *UpdateGroup_UpdateGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetFirst() *string {
 	if t == nil {
-		t = &UpdateGroup_Group_GroupFragment_Members_UserFragmentNoGroups_Name{}
+		t = &UpdateGroup_UpdateGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
 	}
 	return t.First
 }
-func (t *UpdateGroup_Group_GroupFragment_Members_UserFragmentNoGroups_Name) GetLast() *string {
+func (t *UpdateGroup_UpdateGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetLast() *string {
 	if t == nil {
-		t = &UpdateGroup_Group_GroupFragment_Members_UserFragmentNoGroups_Name{}
+		t = &UpdateGroup_UpdateGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
+	}
+	return t.Last
+}
+
+type CreateGroup_CreateGroup_GroupFragment_Members_UserFragmentNoGroups_Name struct {
+	First *string "json:\"first,omitempty\" graphql:\"first\""
+	Last  *string "json:\"last,omitempty\" graphql:\"last\""
+}
+
+func (t *CreateGroup_CreateGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetFirst() *string {
+	if t == nil {
+		t = &CreateGroup_CreateGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
+	}
+	return t.First
+}
+func (t *CreateGroup_CreateGroup_GroupFragment_Members_UserFragmentNoGroups_Name) GetLast() *string {
+	if t == nil {
+		t = &CreateGroup_CreateGroup_GroupFragment_Members_UserFragmentNoGroups_Name{}
 	}
 	return t.Last
 }
@@ -10918,6 +10958,17 @@ func (t *DeleteUser_DeleteUser) GetID() string {
 	return t.ID
 }
 
+type GetGroup struct {
+	GetGroup *GroupFragment "json:\"getGroup\" graphql:\"getGroup\""
+}
+
+func (t *GetGroup) GetGetGroup() *GroupFragment {
+	if t == nil {
+		t = &GetGroup{}
+	}
+	return t.GetGroup
+}
+
 type ListGroups struct {
 	ListGroups []*GroupFragment "json:\"listGroups,omitempty\" graphql:\"listGroups\""
 }
@@ -10930,14 +10981,25 @@ func (t *ListGroups) GetListGroups() []*GroupFragment {
 }
 
 type UpdateGroup struct {
-	Group *GroupFragment "json:\"group\" graphql:\"group\""
+	UpdateGroup *GroupFragment "json:\"updateGroup\" graphql:\"updateGroup\""
 }
 
-func (t *UpdateGroup) GetGroup() *GroupFragment {
+func (t *UpdateGroup) GetUpdateGroup() *GroupFragment {
 	if t == nil {
 		t = &UpdateGroup{}
 	}
-	return t.Group
+	return t.UpdateGroup
+}
+
+type CreateGroup struct {
+	CreateGroup *GroupFragment "json:\"createGroup\" graphql:\"createGroup\""
+}
+
+func (t *CreateGroup) GetCreateGroup() *GroupFragment {
+	if t == nil {
+		t = &CreateGroup{}
+	}
+	return t.CreateGroup
 }
 
 type DeleteGroup struct {
@@ -11171,8 +11233,41 @@ func (t *DeleteUser) GetDeleteUser() *DeleteUser_DeleteUser {
 	return &t.DeleteUser
 }
 
+const GetGroupDocument = `query GetGroup ($name: String!) {
+	getGroup(name: $name) {
+		... GroupFragment
+	}
+}
+fragment GroupFragment on Group {
+	name
+	members {
+		... UserFragmentNoGroups
+	}
+}
+fragment UserFragmentNoGroups on User {
+	id
+	name {
+		first
+		last
+	}
+	email
+}
+`
+
+func (c *Client) GetGroup(ctx context.Context, name string, interceptors ...clientv2.RequestInterceptor) (*GetGroup, error) {
+	vars := map[string]interface{}{
+		"name": name,
+	}
+
+	var res GetGroup
+	if err := c.Client.Post(ctx, "GetGroup", GetGroupDocument, &res, vars, interceptors...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 const ListGroupsDocument = `query ListGroups {
-	# TODO: we should also support getting a single group
 	listGroups {
 		... GroupFragment
 	}
@@ -11205,8 +11300,7 @@ func (c *Client) ListGroups(ctx context.Context, interceptors ...clientv2.Reques
 }
 
 const UpdateGroupDocument = `mutation UpdateGroup ($name: String!, $members: [UserInput!]) {
-	# TODO: for consistency we should probably split create and update mutations
-	group(name: $name, members: $members) {
+	updateGroup(name: $name, members: $members) {
 		... GroupFragment
 	}
 }
@@ -11234,6 +11328,41 @@ func (c *Client) UpdateGroup(ctx context.Context, name string, members []*model.
 
 	var res UpdateGroup
 	if err := c.Client.Post(ctx, "UpdateGroup", UpdateGroupDocument, &res, vars, interceptors...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const CreateGroupDocument = `mutation CreateGroup ($name: String!, $members: [UserInput!]) {
+	createGroup(name: $name, members: $members) {
+		... GroupFragment
+	}
+}
+fragment GroupFragment on Group {
+	name
+	members {
+		... UserFragmentNoGroups
+	}
+}
+fragment UserFragmentNoGroups on User {
+	id
+	name {
+		first
+		last
+	}
+	email
+}
+`
+
+func (c *Client) CreateGroup(ctx context.Context, name string, members []*model.UserInput, interceptors ...clientv2.RequestInterceptor) (*CreateGroup, error) {
+	vars := map[string]interface{}{
+		"name":    name,
+		"members": members,
+	}
+
+	var res CreateGroup
+	if err := c.Client.Post(ctx, "CreateGroup", CreateGroupDocument, &res, vars, interceptors...); err != nil {
 		return nil, err
 	}
 

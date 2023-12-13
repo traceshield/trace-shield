@@ -6,24 +6,82 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/consts"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/resolvers/helpers"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // Organization is the resolver for the organization field.
 func (r *mutationResolver) Organization(ctx context.Context, admins []*model.UserInput) (*model.Organization, error) {
-	return r.C.UpdateOrganization(ctx, admins)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("UpdateOrganization")
+
+	ctx, span := clients.Tracer.Start(ctx, "UpdateOrganization")
+	defer span.End()
+
+	org := model.NewOrganization()
+	if err := org.UpdateAdmins(ctx, admins); err != nil {
+		log.Error(err, "failed to update admins")
+		return nil, err
+	}
+	return org, nil
 }
 
 // Admins is the resolver for the admins field.
 func (r *organizationResolver) Admins(ctx context.Context, obj *model.Organization) ([]*model.User, error) {
-	return r.C.GetOrganizationAdmins(ctx)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("GetOrganizationAdmins")
+
+	ctx, span := clients.Tracer.Start(ctx, "GetOrganizationAdmins")
+	defer span.End()
+
+	respTuples, err := clients.KetoClient.QueryAllTuples(ctx, obj.GetAdminsQuery(), 100)
+	if err != nil {
+		log.Error(err, "Failed to query tuples")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, fmt.Errorf("failed to query tuples: %w", err)
+	}
+
+	var outputAdmins []*model.User
+
+	// TODO: use field collection so we don't query kratos if only the ID is requested
+	// TODO: use a go routine to parallelize this
+	// TODO: dedupe with loginBindingsResolver
+	for _, tuple := range respTuples {
+		subjectSet := tuple.Subject.GetSet()
+		if subjectSet.Namespace == consts.UserNamespace.String() {
+			inUser := model.NewUser(subjectSet.Object)
+			foundUser, err := helpers.GetUserFromId(ctx, inUser.ID)
+			if err != nil {
+				continue
+			}
+			if err := inUser.FromKratos(ctx, foundUser); err != nil {
+				log.Error(err, "failed to update user from kratos", "ID", inUser.ID)
+				continue
+			}
+			outputAdmins = append(outputAdmins, inUser)
+		} else {
+			continue
+		}
+	}
+	return outputAdmins, nil
 }
 
 // Organization is the resolver for the organization field.
 func (r *queryResolver) Organization(ctx context.Context) (*model.Organization, error) {
-	return r.C.GetOrganization(ctx)
+	clients := common.GetContext(ctx)
+	_ = clients.Log.WithName("Organization")
+
+	ctx, span := clients.Tracer.Start(ctx, "Organization")
+	defer span.End()
+
+	return model.NewOrganization(), nil
 }
 
 // Organization returns generated.OrganizationResolver implementation.

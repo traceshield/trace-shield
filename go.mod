@@ -1,4 +1,4 @@
-module github.com/pluralsh/trace-shield
+module github.com/traceshield/trace-shield
 
 go 1.20
 
@@ -7,12 +7,11 @@ require (
 	github.com/Yamashou/gqlgenc v0.14.0
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-logr/logr v1.2.4
-	github.com/ory/herodot v0.10.2
 	github.com/ory/keto/proto v0.11.1-alpha.0
 	github.com/ory/kratos-client-go v0.13.1
-	github.com/pluralsh/trace-shield-controller v0.3.24
 	github.com/ravilushqa/otelgqlgen v0.13.1
 	github.com/rs/cors v1.9.0
+	github.com/traceshield/trace-shield-controller v0.3.26
 	github.com/vektah/gqlparser/v2 v2.5.6
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0
 	go.opentelemetry.io/contrib/propagators/jaeger v1.17.0
@@ -31,21 +30,9 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.12.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.3 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/jandelgado/gcov2lcov v1.0.5 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
-	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
-	github.com/ory/go-acc v0.2.9-0.20230103102148-6b1c9a70dbbe // indirect
-	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/pluralsh/controller-reconcile-helper v0.1.0 // indirect
-	github.com/spf13/afero v1.9.5 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
-	github.com/spf13/cobra v1.7.0 // indirect
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/viper v1.15.0 // indirect
-	github.com/subosito/gotenv v1.4.2 // indirect
 	go.opentelemetry.io/contrib v1.16.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.16.0 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
@@ -53,7 +40,6 @@ require (
 	google.golang.org/genproto v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
-	gopkg.in/ini.v1 v1.67.0 // indirect
 )
 
 require (

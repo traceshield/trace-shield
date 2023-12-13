@@ -24,7 +24,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/pluralsh/trace-shield/backend
+            ghcr.io/traceshield/trace-shield/backend
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}
@@ -61,7 +61,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/pluralsh/trace-shield/frontend
+            ghcr.io/traceshield/trace-shield/frontend
           # generate Docker tags based on the following events/attributes
           tags: |
             type=semver,pattern={{version}}

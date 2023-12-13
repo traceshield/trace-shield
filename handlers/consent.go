@@ -7,8 +7,9 @@ import (
 	"strings"
 
 	hydra "github.com/ory/hydra-client-go/v2"
-	"github.com/pluralsh/trace-shield/graph/model"
-	"github.com/pluralsh/trace-shield/utils"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/utils"
 	"go.opentelemetry.io/otel/codes"
 )
 
@@ -26,12 +27,13 @@ type ConsentRequest struct {
 	GrantScope []string      `json:"grant_scope"`
 }
 
-func (h *Handler) Consent(w http.ResponseWriter, r *http.Request) {
-	log := h.Log.WithName("OAuthConsent")
-
+func Consent(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	clients := common.GetContext(ctx)
 
-	ctx, span := h.C.Tracer.Start(ctx, "OAuthConsent")
+	log := clients.Log.WithName("OAuthConsent")
+
+	ctx, span := clients.Tracer.Start(ctx, "OAuthConsent")
 	defer span.End()
 
 	body, err := io.ReadAll(r.Body)
@@ -53,7 +55,7 @@ func (h *Handler) Consent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	consent, _, err := h.C.HydraClient.OAuth2Api.GetOAuth2ConsentRequest(ctx).ConsentChallenge(consentRequest.Challenge).Execute()
+	consent, _, err := clients.HydraClient.OAuth2Api.GetOAuth2ConsentRequest(ctx).ConsentChallenge(consentRequest.Challenge).Execute()
 	if err != nil {
 		log.Error(err, "error during getting consent request")
 		span.RecordError(err)
@@ -86,7 +88,7 @@ func (h *Handler) Consent(w http.ResponseWriter, r *http.Request) {
 
 	if consentRequest.Action == ConsentActionAccept {
 		var rememberFor int64 = 3600
-		acceptConsent, _, err := h.C.HydraClient.OAuth2Api.AcceptOAuth2ConsentRequest(ctx).
+		acceptConsent, _, err := clients.HydraClient.OAuth2Api.AcceptOAuth2ConsentRequest(ctx).
 			ConsentChallenge(consentRequest.Challenge).
 			AcceptOAuth2ConsentRequest(hydra.AcceptOAuth2ConsentRequest{
 				GrantAccessTokenAudience: consent.RequestedAccessTokenAudience,
@@ -108,7 +110,7 @@ func (h *Handler) Consent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rejectConsent, _, err := h.C.HydraClient.OAuth2Api.RejectOAuth2ConsentRequest(ctx).
+	rejectConsent, _, err := clients.HydraClient.OAuth2Api.RejectOAuth2ConsentRequest(ctx).
 		ConsentChallenge(consentRequest.Challenge).
 		RejectOAuth2Request(hydra.RejectOAuth2Request{
 			Error:            nil,

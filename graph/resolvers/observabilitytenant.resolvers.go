@@ -6,135 +6,653 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pluralsh/trace-shield/consts"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/model"
+	observabilityv1alpha1 "github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/consts"
+	"github.com/traceshield/trace-shield/format"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/resolvers/helpers"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // CreateObservabilityTenant is the resolver for the createObservabilityTenant field.
 func (r *mutationResolver) CreateObservabilityTenant(ctx context.Context, id string, name *string, admins *model.ObservabilityTenantPermissionBindingsInput, metricsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsWriters *model.ObservabilityTenantPermissionBindingsInput, metricsDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, metricsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsWriters *model.ObservabilityTenantPermissionBindingsInput, logsReaders *model.ObservabilityTenantPermissionBindingsInput, logsWriters *model.ObservabilityTenantPermissionBindingsInput, logsDeleters *model.ObservabilityTenantPermissionBindingsInput, logsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, logsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, logsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, tracesReaders *model.ObservabilityTenantPermissionBindingsInput, tracesWriters *model.ObservabilityTenantPermissionBindingsInput, limits *model.ObservabilityTenantLimitsInput) (*model.ObservabilityTenant, error) {
-	return r.C.CreateObservabilityTenant(ctx, id, name, admins, metricsReaders, metricsWriters, metricsDeleters, metricsRulesReaders, metricsRulesWriters, metricsRulesDeleters, metricsAlertsReaders, metricsAlertsWriters, logsReaders, logsWriters, logsDeleters, logsRulesReaders, logsRulesWriters, logsRulesDeleters, tracesReaders, tracesWriters, limits)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("CreateObservabilityTenant").WithValues("Name", name)
+
+	ctx, span := clients.Tracer.Start(ctx, "CreateObservabilityTenant")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("tenant_id", id),
+		)
+	}
+
+	tenantStruct := &observabilityv1alpha1.Tenant{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: id,
+		},
+		Spec: observabilityv1alpha1.TenantSpec{},
+	}
+
+	if limits != nil {
+		tenantStruct.Spec.Limits = &observabilityv1alpha1.LimitSpec{}
+		if limits.Mimir != nil {
+			tmpMimirLimits := observabilityv1alpha1.MimirLimits(*limits.Mimir)
+			tenantStruct.Spec.Limits.Mimir = &tmpMimirLimits
+		}
+		if limits.Loki != nil {
+			tmpLokiLimits := observabilityv1alpha1.LokiLimits(*limits.Loki)
+			tenantStruct.Spec.Limits.Loki = &tmpLokiLimits
+		}
+		if limits.Tempo != nil {
+			tmpTempoLimits := observabilityv1alpha1.TempoLimits(*limits.Tempo)
+			tenantStruct.Spec.Limits.Tempo = &tmpTempoLimits
+		}
+	}
+
+	if name != nil {
+		tenantStruct.Spec.DisplayName = *name
+		if span.IsRecording() {
+			span.SetAttributes(
+				attribute.String("tenant_name", *name),
+			)
+		}
+	}
+
+	var tenantRelations []model.ObservabilityTenantRelation
+
+	if admins != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationAdmins,
+			Bindings: admins,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsReaders,
+			Bindings: metricsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsWriters,
+			Bindings: metricsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsDeleters,
+			Bindings: metricsDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesReaders,
+			Bindings: metricsRulesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesWriters,
+			Bindings: metricsRulesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesDeleters,
+			Bindings: metricsRulesDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsAlertsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsAlertsReaders,
+			Bindings: metricsAlertsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsAlertsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsAlertsWriters,
+			Bindings: metricsAlertsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsReaders,
+			Bindings: logsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsWriters,
+			Bindings: logsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsDeleters,
+			Bindings: logsDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesReaders,
+			Bindings: logsRulesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesWriters,
+			Bindings: logsRulesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesDeleters,
+			Bindings: logsRulesDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if tracesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationTracesReaders,
+			Bindings: tracesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if tracesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationTracesWriters,
+			Bindings: tracesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+
+	createdTenant, err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().Create(ctx, tenantStruct, metav1.CreateOptions{})
+	if err != nil {
+		log.Error(err, "Failed to create observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	tenant := model.NewObservabilityTenantFromControllerClient(createdTenant)
+
+	if err := tenant.MutateObservabilityTenantInKeto(ctx, tenantRelations); err != nil {
+		log.Error(err, "Failed to mutate observability tenant in keto")
+		return nil, err
+	}
+
+	return tenant, nil
 }
 
 // UpdateObservabilityTenant is the resolver for the updateObservabilityTenant field.
 func (r *mutationResolver) UpdateObservabilityTenant(ctx context.Context, id string, name *string, admins *model.ObservabilityTenantPermissionBindingsInput, metricsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsWriters *model.ObservabilityTenantPermissionBindingsInput, metricsDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, metricsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsWriters *model.ObservabilityTenantPermissionBindingsInput, logsReaders *model.ObservabilityTenantPermissionBindingsInput, logsWriters *model.ObservabilityTenantPermissionBindingsInput, logsDeleters *model.ObservabilityTenantPermissionBindingsInput, logsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, logsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, logsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, tracesReaders *model.ObservabilityTenantPermissionBindingsInput, tracesWriters *model.ObservabilityTenantPermissionBindingsInput, limits *model.ObservabilityTenantLimitsInput) (*model.ObservabilityTenant, error) {
-	return r.C.UpdateObservabilityTenant(ctx, id, name, admins, metricsReaders, metricsWriters, metricsDeleters, metricsRulesReaders, metricsRulesWriters, metricsRulesDeleters, metricsAlertsReaders, metricsAlertsWriters, logsReaders, logsWriters, logsDeleters, logsRulesReaders, logsRulesWriters, logsRulesDeleters, tracesReaders, tracesWriters, limits)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("UpdateObservabilityTenant").WithValues("Name", name)
+
+	ctx, span := clients.Tracer.Start(ctx, "UpdateObservabilityTenant")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("tenant_id", id),
+		)
+	}
+
+	existingTenant, err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().Get(ctx, id, metav1.GetOptions{})
+	if err != nil {
+		log.Error(err, "Failed to get observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	if limits != nil {
+		if limits.Mimir != nil {
+			var mimirLimits *observabilityv1alpha1.MimirLimits
+			tmpMimirLimits := observabilityv1alpha1.MimirLimits(*limits.Mimir)
+			mimirLimits = &tmpMimirLimits
+			mimirLimits.DeepCopyInto(existingTenant.Spec.Limits.Mimir)
+		}
+		if limits.Loki != nil {
+			var lokiLimits *observabilityv1alpha1.LokiLimits
+			tmpLokiLimits := observabilityv1alpha1.LokiLimits(*limits.Loki)
+			lokiLimits = &tmpLokiLimits
+			lokiLimits.DeepCopyInto(existingTenant.Spec.Limits.Loki)
+		}
+		if limits.Tempo != nil {
+			var tempoLimits *observabilityv1alpha1.TempoLimits
+			tmpTempoLimits := observabilityv1alpha1.TempoLimits(*limits.Tempo)
+			tempoLimits = &tmpTempoLimits
+			tempoLimits.DeepCopyInto(existingTenant.Spec.Limits.Tempo)
+		}
+	}
+
+	if name != nil {
+		existingTenant.Spec.DisplayName = *name
+		if span.IsRecording() {
+			span.SetAttributes(
+				attribute.String("tenant_name", *name),
+			)
+		}
+	}
+
+	var tenantRelations []model.ObservabilityTenantRelation
+
+	if admins != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationAdmins,
+			Bindings: admins,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsReaders,
+			Bindings: metricsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsWriters,
+			Bindings: metricsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsDeleters,
+			Bindings: metricsDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesReaders,
+			Bindings: metricsRulesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesWriters,
+			Bindings: metricsRulesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsRulesDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsRulesDeleters,
+			Bindings: metricsRulesDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsAlertsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsAlertsReaders,
+			Bindings: metricsAlertsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if metricsAlertsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationMetricsAlertsWriters,
+			Bindings: metricsAlertsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsReaders,
+			Bindings: logsReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsWriters,
+			Bindings: logsWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsDeleters,
+			Bindings: logsDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesReaders,
+			Bindings: logsRulesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesWriters,
+			Bindings: logsRulesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if logsRulesDeleters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationLogsRulesDeleters,
+			Bindings: logsRulesDeleters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if tracesReaders != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationTracesReaders,
+			Bindings: tracesReaders,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+	if tracesWriters != nil {
+		relation := model.ObservabilityTenantRelation{
+			Type:     consts.ObservabilityTenantRelationTracesWriters,
+			Bindings: tracesWriters,
+		}
+		tenantRelations = append(tenantRelations, relation)
+	}
+
+	updatedTenant, err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().Update(ctx, existingTenant, metav1.UpdateOptions{})
+	if err != nil {
+		log.Error(err, "Failed to update observability tenant")
+		return nil, err
+	}
+
+	tenant := model.NewObservabilityTenantFromControllerClient(updatedTenant)
+
+	if err := tenant.MutateObservabilityTenantInKeto(ctx, tenantRelations); err != nil {
+		log.Error(err, "Failed to mutate observability tenant in keto")
+		return nil, err
+	}
+
+	return tenant, nil
 }
 
 // DeleteObservabilityTenant is the resolver for the deleteObservabilityTenant field.
 func (r *mutationResolver) DeleteObservabilityTenant(ctx context.Context, id string) (*model.ObservabilityTenant, error) {
-	return r.C.DeleteTenant(ctx, id)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("DeleteTenant").WithValues("ID", id)
+
+	ctx, span := clients.Tracer.Start(ctx, "DeleteTenant")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("tenant_id", id),
+		)
+	}
+
+	if id == "" {
+		err := fmt.Errorf("observability tenant id cannot be empty")
+		log.Error(err, "Failed to delete observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().Delete(ctx, id, metav1.DeleteOptions{})
+	if err != nil {
+		log.Error(err, "Failed to delete observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	// TODO: Double check that this also deletes all the related permissions in keto
+
+	log.Info("Success deleting observability tenant")
+	return &model.ObservabilityTenant{
+		ID: id,
+	}, nil
 }
 
 // Admins is the resolver for the admins field.
 func (r *observabilityTenantResolver) Admins(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationAdmins)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationAdmins)
 }
 
 // MetricsReaders is the resolver for the metricsReaders field.
 func (r *observabilityTenantResolver) MetricsReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsReaders)
 }
 
 // MetricsWriters is the resolver for the metricsWriters field.
 func (r *observabilityTenantResolver) MetricsWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsWriters)
 }
 
 // MetricsDeleters is the resolver for the metricsDeleters field.
 func (r *observabilityTenantResolver) MetricsDeleters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsDeleters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsDeleters)
 }
 
 // MetricsRulesReaders is the resolver for the metricsRulesReaders field.
 func (r *observabilityTenantResolver) MetricsRulesReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsRulesReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsRulesReaders)
 }
 
 // MetricsRulesWriters is the resolver for the metricsRulesWriters field.
 func (r *observabilityTenantResolver) MetricsRulesWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsRulesWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsRulesWriters)
 }
 
 // MetricsRulesDeleters is the resolver for the metricsRulesDeleters field.
 func (r *observabilityTenantResolver) MetricsRulesDeleters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsRulesDeleters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsRulesDeleters)
 }
 
 // MetricsAlertsReaders is the resolver for the metricsAlertsReaders field.
 func (r *observabilityTenantResolver) MetricsAlertsReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsAlertsReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsAlertsReaders)
 }
 
 // MetricsAlertsWriters is the resolver for the metricsAlertsWriters field.
 func (r *observabilityTenantResolver) MetricsAlertsWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationMetricsAlertsWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationMetricsAlertsWriters)
 }
 
 // LogsReaders is the resolver for the logsReaders field.
 func (r *observabilityTenantResolver) LogsReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsReaders)
 }
 
 // LogsWriters is the resolver for the logsWriters field.
 func (r *observabilityTenantResolver) LogsWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsWriters)
 }
 
 // LogsDeleters is the resolver for the logsDeleters field.
 func (r *observabilityTenantResolver) LogsDeleters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsDeleters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsDeleters)
 }
 
 // LogsRulesReaders is the resolver for the logsRulesReaders field.
 func (r *observabilityTenantResolver) LogsRulesReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsRulesReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsRulesReaders)
 }
 
 // LogsRulesWriters is the resolver for the logsRulesWriters field.
 func (r *observabilityTenantResolver) LogsRulesWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsRulesWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsRulesWriters)
 }
 
 // LogsRulesDeleters is the resolver for the logsRulesDeleters field.
 func (r *observabilityTenantResolver) LogsRulesDeleters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationLogsRulesDeleters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationLogsRulesDeleters)
 }
 
 // TracesReaders is the resolver for the tracesReaders field.
 func (r *observabilityTenantResolver) TracesReaders(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationTracesReaders)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationTracesReaders)
 }
 
 // TracesWriters is the resolver for the tracesWriters field.
 func (r *observabilityTenantResolver) TracesWriters(ctx context.Context, obj *model.ObservabilityTenant) (*model.ObservabilityTenantPermissionBindings, error) {
-	return r.C.ResolveTenantBindings(ctx, obj.ID, consts.ObservabilityTenantRelationTracesWriters)
+	return obj.ResolveTenantBindings(ctx, consts.ObservabilityTenantRelationTracesWriters)
 }
 
 // Users is the resolver for the users field.
 func (r *observabilityTenantPermissionBindingsResolver) Users(ctx context.Context, obj *model.ObservabilityTenantPermissionBindings) ([]*model.User, error) {
-	return r.C.GetObservabilityTenantUsers(ctx, obj.Users)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("UserTenantPermissionBindingsResolver")
+	ctx, span := clients.Tracer.Start(ctx, "UserTenantPermissionBindingsResolver")
+	defer span.End()
+
+	var output []*model.User
+
+	// TODO: use field collection so we don't query kratos if only the ID is requested
+	// TODO: use a go routine to parallelize this
+	// TODO: dedupe with loginBindingsResolver
+	for _, inUser := range obj.Users {
+		foundUser, err := helpers.GetUserFromId(ctx, inUser.ID)
+		if err != nil {
+			log.Error(err, "failed to get user", "ID", inUser.ID)
+			continue
+		}
+		if err := inUser.FromKratos(ctx, foundUser); err != nil {
+			log.Error(err, "failed to update user from kratos", "ID", inUser.ID)
+			continue
+		}
+		output = append(output, inUser)
+	}
+	return output, nil
 }
 
 // Groups is the resolver for the groups field.
 func (r *observabilityTenantPermissionBindingsResolver) Groups(ctx context.Context, obj *model.ObservabilityTenantPermissionBindings) ([]*model.Group, error) {
-	return r.C.GetObservabilityTenantGroups(ctx, obj.Groups)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("GroupTenantPermissionBindingsResolver")
+	ctx, span := clients.Tracer.Start(ctx, "GroupTenantPermissionBindingsResolver")
+	defer span.End()
+
+	var output []*model.Group
+
+	// TODO: use a go routine to parallelize this
+	// TODO: dedupe with loginBindingsResolver
+	for _, inGroup := range obj.Groups {
+		exists, err := inGroup.ExistsInKeto(ctx)
+		if !exists || err != nil {
+			log.Error(err, "failed to get group", "Name", inGroup.Name)
+			continue
+		}
+		output = append(output, inGroup)
+	}
+	return output, nil
 }
 
 // Oauth2Clients is the resolver for the oauth2Clients field.
 func (r *observabilityTenantPermissionBindingsResolver) Oauth2Clients(ctx context.Context, obj *model.ObservabilityTenantPermissionBindings) ([]*model.OAuth2Client, error) {
-	return r.C.GetObservabilityTenantOauth2Clients(ctx, obj.Oauth2Clients)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("GetObservabilityTenantOauth2Clients")
+	// TODO: turn this into a more generic function that can be used for all the Get*From* functions
+
+	// TODO: use field collection so we don't query kratos if only the ID is requested
+	// TODO: use a go routine to parallelize this
+	ctx, span := clients.Tracer.Start(ctx, "GetObservabilityTenantOauth2Clients")
+	defer span.End()
+
+	var output []*model.OAuth2Client
+
+	for _, inClient := range obj.Oauth2Clients {
+		client, err := helpers.GetOAuth2ClientFromId(ctx, *inClient.ClientID)
+		if err != nil {
+			log.Error(err, "failed to get oauth2 client", "ClientID", inClient.ClientID)
+			continue
+		}
+		output = append(output, format.HydraOAuth2ClientToGraphQL(*client))
+	}
+	return output, nil
 }
 
 // ListObservabilityTenants is the resolver for the listObservabilityTenants field.
 func (r *queryResolver) ListObservabilityTenants(ctx context.Context) ([]*model.ObservabilityTenant, error) {
-	return r.C.ListTenants(ctx)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("ListTenants")
+
+	ctx, span := clients.Tracer.Start(ctx, "ListTenants")
+	defer span.End()
+
+	tenants, err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		log.Error(err, "Failed to list observability tenants")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	var outputTenants []*model.ObservabilityTenant
+
+	for _, tenant := range tenants.Items {
+		outTenant := model.NewObservabilityTenantFromControllerClient(&tenant)
+		outputTenants = append(outputTenants, outTenant)
+	}
+
+	log.Info("Success listing observability tenants")
+	return outputTenants, nil
 }
 
 // GetObservabilityTenant is the resolver for the getObservabilityTenant field.
 func (r *queryResolver) GetObservabilityTenant(ctx context.Context, id string) (*model.ObservabilityTenant, error) {
-	return r.C.GetTenant(ctx, id)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("GetTenant").WithValues("ID", id)
+
+	ctx, span := clients.Tracer.Start(ctx, "GetTenant")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("tenant_id", id),
+		)
+	}
+
+	if id == "" {
+		err := fmt.Errorf("observability tenant id cannot be empty")
+		log.Error(err, "Failed to get observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	foundTenant, err := clients.ControllerClient.ObservabilityV1alpha1().Tenants().Get(ctx, id, metav1.GetOptions{})
+	if err != nil {
+		log.Error(err, "Failed to get observability tenant")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	tenant := model.NewObservabilityTenantFromControllerClient(foundTenant)
+
+	log.Info("Success getting observability tenant")
+	return tenant, nil
 }
 
 // ObservabilityTenant returns generated.ObservabilityTenantResolver implementation.

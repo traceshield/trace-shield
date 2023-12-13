@@ -5,7 +5,7 @@ package model
 import (
 	"time"
 
-	"github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
 )
 
 type AcceptOAuth2ConsentRequestSession struct {

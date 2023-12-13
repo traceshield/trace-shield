@@ -5,16 +5,17 @@ import (
 	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/pluralsh/trace-shield/handlers"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/handlers"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
 
-func (d *Directive) CheckPermissions(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
+func CheckPermissions(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("CheckPermissions")
 
-	log := d.C.Log.WithName("CheckPermissions")
-
-	_, span := d.C.Tracer.Start(ctx, "CheckPermissions")
+	_, span := clients.Tracer.Start(ctx, "CheckPermissions")
 	defer span.End()
 
 	// setupLog.Info("Scope directive", "object", graphql.GetFieldContext(ctx).Parent)

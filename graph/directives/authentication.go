@@ -6,15 +6,18 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/pluralsh/trace-shield/handlers"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/handlers"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
 
-func (d *Directive) IsAuthenticated(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
-	log := d.C.Log.WithName("IsAuthenticated")
+func IsAuthenticated(ctx context.Context, obj interface{}, next graphql.Resolver) (interface{}, error) {
+	clients := common.GetContext(ctx)
 
-	_, span := d.C.Tracer.Start(ctx, "IsAuthenticated")
+	log := clients.Log.WithName("IsAuthenticated")
+
+	_, span := clients.Tracer.Start(ctx, "IsAuthenticated")
 	defer span.End()
 
 	userCtx := handlers.ForContext(ctx)

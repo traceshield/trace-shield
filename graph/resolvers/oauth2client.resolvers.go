@@ -6,40 +6,227 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pluralsh/trace-shield/clients"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/model"
-	"github.com/pluralsh/trace-shield/utils"
+	"github.com/traceshield/trace-shield/format"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield/graph/resolvers/helpers"
+	"github.com/traceshield/trace-shield/utils"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // Users is the resolver for the users field.
 func (r *loginBindingsResolver) Users(ctx context.Context, obj *model.LoginBindings) ([]*model.User, error) {
-	return r.C.GetObservabilityTenantUsers(ctx, obj.Users)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("UserLoginBindingsResolver")
+	ctx, span := clients.Tracer.Start(ctx, "UserLoginBindingsResolver")
+	defer span.End()
+
+	var output []*model.User
+
+	// TODO: use field collection so we don't query kratos if only the ID is requested
+	// TODO: use a go routine to parallelize this
+	// TODO: dedupe with observabilityTenantPermissionBindingsResolver
+	for _, inUser := range obj.Users {
+		foundUser, err := helpers.GetUserFromId(ctx, inUser.ID)
+		if err != nil {
+			log.Error(err, "failed to get user", "ID", inUser.ID)
+			continue
+		}
+		if err := inUser.FromKratos(ctx, foundUser); err != nil {
+			log.Error(err, "failed to update user from kratos", "ID", inUser.ID)
+			continue
+		}
+		output = append(output, inUser)
+	}
+	return output, nil
 }
 
 // Groups is the resolver for the groups field.
 func (r *loginBindingsResolver) Groups(ctx context.Context, obj *model.LoginBindings) ([]*model.Group, error) {
-	return r.C.GetObservabilityTenantGroups(ctx, obj.Groups)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("GroupLoginBindingsResolver")
+	ctx, span := clients.Tracer.Start(ctx, "GroupLoginBindingsResolver")
+	defer span.End()
+
+	var output []*model.Group
+
+	// TODO: use a go routine to parallelize this
+	// TODO: dedupe with observabilityTenantPermissionBindingsResolver
+	for _, inGroup := range obj.Groups {
+		exists, err := inGroup.ExistsInKeto(ctx)
+		if !exists || err != nil {
+			log.Error(err, "failed to get group", "Name", inGroup.Name)
+			continue
+		}
+		output = append(output, inGroup)
+	}
+	return output, nil
 }
 
 // CreateOAuth2Client is the resolver for the createOAuth2Client field.
 func (r *mutationResolver) CreateOAuth2Client(ctx context.Context, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) (*model.OAuth2Client, error) {
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("CreateOAuth2Client").WithValues("Name", clientName)
+	ctx, span := clients.Tracer.Start(ctx, "CreateOAuth2Client")
+	defer span.End()
+
 	if clientSecret == nil || *clientSecret == "" {
 		secret := utils.RandStringBytesMaskImprSrcUnsafe(32)
 		clientSecret = &secret
 	}
-	return r.C.CreateOAuth2Client(ctx, clients.HydraOperationCreate, allowedCorsOrigins, audience, authorizationCodeGrantAccessTokenLifespan, authorizationCodeGrantIDTokenLifespan, authorizationCodeGrantRefreshTokenLifespan, backChannelLogoutSessionRequired, backChannelLogoutURI, clientCredentialsGrantAccessTokenLifespan, nil, clientName, clientSecret, clientSecretExpiresAt, clientURI, contacts, frontchannelLogoutSessionRequired, frontchannelLogoutURI, grantTypes, implicitGrantAccessTokenLifespan, implicitGrantIDTokenLifespan, jwks, jwksURI, jwtBearerGrantAccessTokenLifespan, logoURI, metadata, policyURI, postLogoutRedirectUris, redirectUris, responseTypes, scope, sectorIdentifierURI, subjectType, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, tosURI, userinfoSignedResponseAlgorithm, loginBindings)
+
+	oauthClient := format.GraphQLNewOAuth2ClientToHydra(allowedCorsOrigins, audience, authorizationCodeGrantAccessTokenLifespan, authorizationCodeGrantIDTokenLifespan, authorizationCodeGrantRefreshTokenLifespan, backChannelLogoutSessionRequired, backChannelLogoutURI, clientCredentialsGrantAccessTokenLifespan, nil, clientName, clientSecret, clientSecretExpiresAt, clientURI, contacts, frontchannelLogoutSessionRequired, frontchannelLogoutURI, grantTypes, implicitGrantAccessTokenLifespan, implicitGrantIDTokenLifespan, jwks, jwksURI, jwtBearerGrantAccessTokenLifespan, logoURI, metadata, policyURI, postLogoutRedirectUris, redirectUris, responseTypes, scope, sectorIdentifierURI, subjectType, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, tosURI, userinfoSignedResponseAlgorithm, loginBindings)
+
+	createdClient, resp, err := clients.HydraClient.OAuth2Api.CreateOAuth2Client(ctx).OAuth2Client(oauthClient).Execute()
+	if err != nil || resp.StatusCode != 201 {
+		log.Error(err, "failed to create oauth2 client")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, fmt.Errorf("failed to create oauth2 client: %w", err)
+	}
+
+	if createdClient == nil {
+		err = fmt.Errorf("failed to create oauth2 client")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("client_id", *createdClient.ClientId),
+		)
+	}
+
+	client := format.HydraOAuth2ClientToGraphQL(*createdClient)
+
+	exist, err := client.ExistsInKeto(ctx)
+	if err != nil {
+		log.Error(err, "failed to check if oauth2 client exists in keto")
+	}
+	if !exist {
+		if err := client.CreateInKeto(ctx); err != nil {
+			log.Error(err, "failed to create oauth2 client in keto")
+		}
+	}
+
+	if err := client.UpdateLoginBindings(ctx, loginBindings); err != nil {
+		log.Error(err, "failed to update oauth2 client login bindings")
+		// TODO: should we return here?
+	}
+
+	log.Info("Success creating oauth2 client in hydra")
+
+	return client, nil
 }
 
 // UpdateOAuth2Client is the resolver for the updateOAuth2Client field.
 func (r *mutationResolver) UpdateOAuth2Client(ctx context.Context, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientID string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) (*model.OAuth2Client, error) {
-	return r.C.CreateOAuth2Client(ctx, clients.HydraOperationUpdate, allowedCorsOrigins, audience, authorizationCodeGrantAccessTokenLifespan, authorizationCodeGrantIDTokenLifespan, authorizationCodeGrantRefreshTokenLifespan, backChannelLogoutSessionRequired, backChannelLogoutURI, clientCredentialsGrantAccessTokenLifespan, &clientID, clientName, clientSecret, clientSecretExpiresAt, clientURI, contacts, frontchannelLogoutSessionRequired, frontchannelLogoutURI, grantTypes, implicitGrantAccessTokenLifespan, implicitGrantIDTokenLifespan, jwks, jwksURI, jwtBearerGrantAccessTokenLifespan, logoURI, metadata, policyURI, postLogoutRedirectUris, redirectUris, responseTypes, scope, sectorIdentifierURI, subjectType, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, tosURI, userinfoSignedResponseAlgorithm, loginBindings)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("UpdateOAuth2Client").WithValues("ID", clientID)
+	ctx, span := clients.Tracer.Start(ctx, "UpdateOAuth2Client")
+	defer span.End()
+
+	oauthClient := format.GraphQLNewOAuth2ClientToHydra(allowedCorsOrigins, audience, authorizationCodeGrantAccessTokenLifespan, authorizationCodeGrantIDTokenLifespan, authorizationCodeGrantRefreshTokenLifespan, backChannelLogoutSessionRequired, backChannelLogoutURI, clientCredentialsGrantAccessTokenLifespan, &clientID, clientName, clientSecret, clientSecretExpiresAt, clientURI, contacts, frontchannelLogoutSessionRequired, frontchannelLogoutURI, grantTypes, implicitGrantAccessTokenLifespan, implicitGrantIDTokenLifespan, jwks, jwksURI, jwtBearerGrantAccessTokenLifespan, logoURI, metadata, policyURI, postLogoutRedirectUris, redirectUris, responseTypes, scope, sectorIdentifierURI, subjectType, tokenEndpointAuthMethod, tokenEndpointAuthSigningAlgorithm, tosURI, userinfoSignedResponseAlgorithm, loginBindings)
+
+	if clientID == "" {
+		err := fmt.Errorf("clientID is required for update")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	updatedClient, resp, err := clients.HydraClient.OAuth2Api.SetOAuth2Client(ctx, clientID).OAuth2Client(oauthClient).Execute()
+	if err != nil || resp.StatusCode != 200 {
+		log.Error(err, "failed to update oauth2 client")
+		return nil, fmt.Errorf("failed to update oauth2 client: %w", err)
+	}
+
+	if updatedClient == nil {
+		err = fmt.Errorf("failed to update oauth2 client")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("client_id", *updatedClient.ClientId),
+		)
+	}
+
+	client := format.HydraOAuth2ClientToGraphQL(*updatedClient)
+
+	exist, err := client.ExistsInKeto(ctx)
+	if err != nil {
+		log.Error(err, "failed to check if oauth2 client exists in keto")
+	}
+	if !exist {
+		if err := client.CreateInKeto(ctx); err != nil {
+			log.Error(err, "failed to create oauth2 client in keto")
+		}
+	}
+
+	if err := client.UpdateLoginBindings(ctx, loginBindings); err != nil {
+		log.Error(err, "failed to update oauth2 client login bindings")
+		// TODO: should we return here?
+	}
+
+	log.Info("Success updating oauth2 client in hydra")
+
+	return client, nil
 }
 
 // DeleteOAuth2Client is the resolver for the deleteOAuth2Client field.
 func (r *mutationResolver) DeleteOAuth2Client(ctx context.Context, clientID string) (*model.OAuth2Client, error) {
-	return r.C.DeleteOAuth2Client(ctx, clientID)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("DeleteOAuth2Client").WithValues("ID", clientID)
+
+	ctx, span := clients.Tracer.Start(ctx, "DeleteOAuth2Client")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("client_id", clientID),
+		)
+	}
+
+	if clientID == "" {
+		err := fmt.Errorf("clientID is required for update")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	oauth2Client := model.NewOAuth2Client(clientID)
+
+	resp, err := clients.HydraClient.OAuth2Api.DeleteOAuth2Client(ctx, *oauth2Client.ClientID).Execute()
+	if err != nil || resp.StatusCode != 204 {
+		log.Error(err, "failed to delete oauth2 client")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, fmt.Errorf("failed to delete oauth2 client: %w", err)
+	}
+
+	exist, err := oauth2Client.ExistsInKeto(ctx)
+	if err != nil {
+		log.Error(err, "failed to check if oauth2 client exists in keto")
+	}
+	if exist {
+		if err := oauth2Client.DeleteInKeto(ctx); err != nil {
+			log.Error(err, "failed to delete oauth2 client in keto")
+		}
+	}
+
+	log.Info("Success deleting oauth2 client")
+
+	return &model.OAuth2Client{
+		ClientID: oauth2Client.ClientID,
+	}, nil
 }
 
 // Owner is the resolver for the owner field.
@@ -50,17 +237,72 @@ func (r *oAuth2ClientResolver) Owner(ctx context.Context, obj *model.OAuth2Clien
 
 // LoginBindings is the resolver for the loginBindings field.
 func (r *oAuth2ClientResolver) LoginBindings(ctx context.Context, obj *model.OAuth2Client) (*model.LoginBindings, error) {
-	return r.C.ResolveOAuth2ClientLoginBindings(ctx, *obj.ClientID)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("ResolveOAuth2ClientLoginBindings").WithValues("ID", *obj.ClientID)
+
+	var bindings *model.LoginBindings
+
+	ctx, span := clients.Tracer.Start(ctx, "ResolveOAuth2ClientLoginBindings")
+	defer span.End()
+
+	if span.IsRecording() {
+		span.SetAttributes(
+			attribute.String("client_id", *obj.ClientID),
+		)
+	}
+
+	users, groups, err := obj.ExpandLoginBindingRelation(ctx)
+	if err != nil {
+		log.Error(err, "Failed to expand login binding relation")
+		return nil, err
+	}
+
+	if len(users) > 0 || len(groups) > 0 {
+		bindings = &model.LoginBindings{}
+	}
+
+	for _, user := range users {
+		bindings.Users = append(bindings.Users, user)
+	}
+
+	for _, group := range groups {
+		bindings.Groups = append(bindings.Groups, group)
+	}
+
+	log.Info("Success getting group members in keto")
+	return bindings, nil
 }
 
 // ListOAuth2Clients is the resolver for the listOAuth2Clients field.
 func (r *queryResolver) ListOAuth2Clients(ctx context.Context) ([]*model.OAuth2Client, error) {
-	return r.C.ListOAuth2Clients(ctx)
+	clients := common.GetContext(ctx)
+	log := clients.Log.WithName("ListOAuth2Clients")
+
+	ctx, span := clients.Tracer.Start(ctx, "ListOAuth2Clients")
+	defer span.End()
+
+	oauth2Clients, resp, err := clients.HydraClient.OAuth2Api.ListOAuth2Clients(ctx).Execute()
+	if err != nil || resp.StatusCode != 200 {
+		log.Error(err, "failed to list oauth2 clients")
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, fmt.Errorf("failed to list oauth2 clients: %w", err)
+	}
+	var output []*model.OAuth2Client
+	for _, oauth2Client := range oauth2Clients {
+		output = append(output, format.HydraOAuth2ClientToGraphQL(oauth2Client))
+	}
+	return output, nil
 }
 
 // GetOAuth2Client is the resolver for the getOAuth2Client field.
 func (r *queryResolver) GetOAuth2Client(ctx context.Context, clientID string) (*model.OAuth2Client, error) {
-	return r.C.GetOAuth2Client(ctx, clientID)
+	oauth2Client, err := helpers.GetOAuth2ClientFromId(ctx, clientID)
+	if err != nil {
+		return nil, err
+	}
+
+	return format.HydraOAuth2ClientToGraphQL(*oauth2Client), nil
 }
 
 // LoginBindings returns generated.LoginBindingsResolver implementation.

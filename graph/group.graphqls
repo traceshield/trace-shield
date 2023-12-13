@@ -19,11 +19,26 @@ input GroupInput {
 extend type Query {
   "Get a list of all users."
   listGroups: [Group!] @checkPermissions @isAuthenticated
+
+  "Get a group by its name."
+  getGroup(
+    "The unique name of the group."
+    name: String!
+  ): Group! @checkPermissions @isAuthenticated
 }
 
 extend type Mutation {
-  "Create or update a group."
-  group(
+  "Create a group."
+  createGroup(
+    "The unique name of the group."
+    name: String!
+
+    "The IDs or email addresses of the users that are members of the group."
+    members: [UserInput!]
+  ): Group! @checkPermissions @isAuthenticated
+
+  "Update a group."
+  updateGroup(
     "The unique name of the group."
     name: String!
 

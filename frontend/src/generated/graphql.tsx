@@ -424,6 +424,8 @@ export type Mutation = {
   acceptOAuth2ConsentRequest: OAuth2RedirectTo;
   /** AcceptOAuth2LoginRequest accepts an OAuth 2.0 login request. If the request was granted, a code or access token will be issued. If the request was denied, the request will be rejected. */
   acceptOAuth2LoginRequest: OAuth2RedirectTo;
+  /** Create a group. */
+  createGroup: Group;
   /** Create a new OAuth2 Client. */
   createOAuth2Client: OAuth2Client;
   /** Create an observability tenant. */
@@ -438,14 +440,14 @@ export type Mutation = {
   deleteObservabilityTenant: ObservabilityTenant;
   /** Delete a user. */
   deleteUser: User;
-  /** Create or update a group. */
-  group: Group;
   /** Create a new organization. */
   organization: Organization;
   /** RejectOAuth2ConsentRequest rejects an OAuth 2.0 consent request. */
   rejectOAuth2ConsentRequest: OAuth2RedirectTo;
   /** RejectOAuth2LoginRequest rejects an OAuth 2.0 login request. */
   rejectOAuth2LoginRequest: OAuth2RedirectTo;
+  /** Update a group. */
+  updateGroup: Group;
   /** Update an OAuth 2 Client. */
   updateOAuth2Client: OAuth2Client;
   /** Update an observability tenant. */
@@ -470,6 +472,12 @@ export type MutationAcceptOAuth2LoginRequestArgs = {
   remember?: InputMaybe<Scalars['Boolean']>;
   rememberFor?: InputMaybe<Scalars['Int']>;
   subject: Scalars['String'];
+};
+
+
+export type MutationCreateGroupArgs = {
+  members?: InputMaybe<Array<UserInput>>;
+  name: Scalars['String'];
 };
 
 
@@ -562,12 +570,6 @@ export type MutationDeleteUserArgs = {
 };
 
 
-export type MutationGroupArgs = {
-  members?: InputMaybe<Array<UserInput>>;
-  name: Scalars['String'];
-};
-
-
 export type MutationOrganizationArgs = {
   admins?: InputMaybe<Array<UserInput>>;
 };
@@ -580,6 +582,12 @@ export type MutationRejectOAuth2ConsentRequestArgs = {
 
 export type MutationRejectOAuth2LoginRequestArgs = {
   challenge: Scalars['String'];
+};
+
+
+export type MutationUpdateGroupArgs = {
+  members?: InputMaybe<Array<UserInput>>;
+  name: Scalars['String'];
 };
 
 
@@ -993,6 +1001,8 @@ export type PolicyMatchInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get a group by its name. */
+  getGroup: Group;
   /** Get a single OAuth2 Client by ID. */
   getOAuth2Client?: Maybe<OAuth2Client>;
   getObservabilityTenant: ObservabilityTenant;
@@ -1012,6 +1022,11 @@ export type Query = {
   oauth2LoginRequest?: Maybe<OAuth2LoginRequest>;
   /** Get a single organization by name. */
   organization: Organization;
+};
+
+
+export type QueryGetGroupArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -1235,6 +1250,13 @@ export type UserInput = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
+export type GetGroupQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', name: string, members?: Array<{ __typename?: 'User', id: string, email: string, name?: { __typename?: 'Name', first?: string | null, last?: string | null } | null }> | null } };
+
 export type ListGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1246,7 +1268,15 @@ export type UpdateGroupMutationVariables = Exact<{
 }>;
 
 
-export type UpdateGroupMutation = { __typename?: 'Mutation', group: { __typename?: 'Group', name: string, members?: Array<{ __typename?: 'User', id: string, email: string, name?: { __typename?: 'Name', first?: string | null, last?: string | null } | null }> | null } };
+export type UpdateGroupMutation = { __typename?: 'Mutation', updateGroup: { __typename?: 'Group', name: string, members?: Array<{ __typename?: 'User', id: string, email: string, name?: { __typename?: 'Name', first?: string | null, last?: string | null } | null }> | null } };
+
+export type CreateGroupMutationVariables = Exact<{
+  name: Scalars['String'];
+  members?: InputMaybe<Array<UserInput> | UserInput>;
+}>;
+
+
+export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', name: string, members?: Array<{ __typename?: 'User', id: string, email: string, name?: { __typename?: 'Name', first?: string | null, last?: string | null } | null }> | null } };
 
 export type DeleteGroupMutationVariables = Exact<{
   name: Scalars['String'];
@@ -2073,6 +2103,41 @@ export const UserFragmentDoc = gql`
   }
 }
     `;
+export const GetGroupDocument = gql`
+    query GetGroup($name: String!) {
+  getGroup(name: $name) {
+    ...GroupFragment
+  }
+}
+    ${GroupFragmentDoc}`;
+
+/**
+ * __useGetGroupQuery__
+ *
+ * To run a query within a React component, call `useGetGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGroupQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetGroupQuery(baseOptions: Apollo.QueryHookOptions<GetGroupQuery, GetGroupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGroupQuery, GetGroupQueryVariables>(GetGroupDocument, options);
+      }
+export function useGetGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGroupQuery, GetGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGroupQuery, GetGroupQueryVariables>(GetGroupDocument, options);
+        }
+export type GetGroupQueryHookResult = ReturnType<typeof useGetGroupQuery>;
+export type GetGroupLazyQueryHookResult = ReturnType<typeof useGetGroupLazyQuery>;
+export type GetGroupQueryResult = Apollo.QueryResult<GetGroupQuery, GetGroupQueryVariables>;
 export const ListGroupsDocument = gql`
     query ListGroups {
   listGroups {
@@ -2109,7 +2174,7 @@ export type ListGroupsLazyQueryHookResult = ReturnType<typeof useListGroupsLazyQ
 export type ListGroupsQueryResult = Apollo.QueryResult<ListGroupsQuery, ListGroupsQueryVariables>;
 export const UpdateGroupDocument = gql`
     mutation UpdateGroup($name: String!, $members: [UserInput!]) {
-  group(name: $name, members: $members) {
+  updateGroup(name: $name, members: $members) {
     ...GroupFragment
   }
 }
@@ -2141,6 +2206,40 @@ export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
+export const CreateGroupDocument = gql`
+    mutation CreateGroup($name: String!, $members: [UserInput!]) {
+  createGroup(name: $name, members: $members) {
+    ...GroupFragment
+  }
+}
+    ${GroupFragmentDoc}`;
+export type CreateGroupMutationFn = Apollo.MutationFunction<CreateGroupMutation, CreateGroupMutationVariables>;
+
+/**
+ * __useCreateGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupMutation, { data, loading, error }] = useCreateGroupMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      members: // value for 'members'
+ *   },
+ * });
+ */
+export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupMutation, CreateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
+      }
+export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
+export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
+export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
 export const DeleteGroupDocument = gql`
     mutation DeleteGroup($name: String!) {
   deleteGroup(name: $name) {
@@ -3086,6 +3185,7 @@ export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const namedOperations = {
   Query: {
+    GetGroup: 'GetGroup',
     ListGroups: 'ListGroups',
     ListOAuth2Clients: 'ListOAuth2Clients',
     GetOAuth2Client: 'GetOAuth2Client',
@@ -3098,6 +3198,7 @@ export const namedOperations = {
   },
   Mutation: {
     UpdateGroup: 'UpdateGroup',
+    CreateGroup: 'CreateGroup',
     DeleteGroup: 'DeleteGroup',
     DeleteOAuth2Client: 'DeleteOAuth2Client',
     UpdateOAuth2Client: 'UpdateOAuth2Client',

@@ -12,7 +12,6 @@ RUN go mod download
 
 # Copy the go source
 COPY server.go server.go
-COPY clients/ clients/
 COPY format/ format/
 COPY graph/ graph/
 COPY handlers/ handlers/

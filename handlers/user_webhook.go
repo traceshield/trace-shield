@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/render"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/model"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
@@ -36,13 +38,14 @@ func (b *BootstrapRequest) Render(w http.ResponseWriter, r *http.Request) error 
 	return nil
 }
 
-func (h *Handler) BootstrapAdmin(w http.ResponseWriter, r *http.Request) {
-	log := h.Log.WithName("BootstrapAdmin")
+func BootstrapAdmin(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	clients := common.GetContext(ctx)
+
+	log := clients.Log.WithName("BootstrapAdmin")
 	log.Info("Bootstrapping first user as admin")
 
-	ctx := r.Context()
-
-	ctx, span := h.C.Tracer.Start(ctx, "getGroupPolicyTenants")
+	ctx, span := clients.Tracer.Start(ctx, "getGroupPolicyTenants")
 	defer span.End()
 
 	data := &BootstrapRequest{}
@@ -68,7 +71,9 @@ func (h *Handler) BootstrapAdmin(w http.ResponseWriter, r *http.Request) {
 		)
 	}
 
-	currentAdmins, err := h.C.GetOrganizationAdmins(ctx)
+	org := model.NewOrganization()
+
+	currentAdmins, err := org.ExpandOrgAdminRelation(ctx)
 	if err != nil {
 		log.Error(err, "failed to get current admins")
 		render.Render(w, r, ErrFailedToGetAdmins(err))
@@ -77,7 +82,7 @@ func (h *Handler) BootstrapAdmin(w http.ResponseWriter, r *http.Request) {
 
 	if len(currentAdmins) == 0 {
 		log.Info("No current admins, adding initial user as admin", "user", data.UserID)
-		err = h.C.AddAdminToOrganization(ctx, data.UserID)
+		err = clients.KetoClient.CreateTuple(ctx, org.GetAdminTuple(data.UserID))
 		if err != nil {
 			log.Error(err, "failed to add bootstrap user")
 			render.Render(w, r, ErrFailedToSetInitialAdmin(err))
@@ -86,9 +91,9 @@ func (h *Handler) BootstrapAdmin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusOK) // TODO: we should probably do error checking above so we can return a 400 if something goes wrong
-	render.Render(w, r, h.BootstrapUser(data))
+	render.Render(w, r, bootstrapUser(data))
 }
 
-func (h *Handler) BootstrapUser(b *BootstrapRequest) *BootstrapRequest {
+func bootstrapUser(b *BootstrapRequest) *BootstrapRequest {
 	return b
 }

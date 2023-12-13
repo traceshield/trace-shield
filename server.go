@@ -14,12 +14,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/cors"
 
-	"github.com/pluralsh/trace-shield/clients"
-	"github.com/pluralsh/trace-shield/graph/directives"
-	"github.com/pluralsh/trace-shield/graph/generated"
-	"github.com/pluralsh/trace-shield/graph/resolvers"
-	"github.com/pluralsh/trace-shield/handlers"
 	"github.com/ravilushqa/otelgqlgen"
+	"github.com/traceshield/trace-shield/graph/common"
+	"github.com/traceshield/trace-shield/graph/directives"
+	"github.com/traceshield/trace-shield/graph/generated"
+	"github.com/traceshield/trace-shield/graph/resolvers"
+	"github.com/traceshield/trace-shield/handlers"
 	"go.opentelemetry.io/otel"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -58,67 +58,56 @@ func main() {
 
 	initTracer(ctx)
 
-	kratosAdminClient, err := clients.NewKratosAdminClient()
+	httpClient := &http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
+
+	kratosAdminClient, err := common.NewKratosAdminClient(httpClient)
 	if err != nil {
 		setupLog.Error(err, "An admin address for kratos must be configured")
 		panic(err)
 	}
 
-	kratosPublicClient, err := clients.NewKratosPublicClient()
+	kratosPublicClient, err := common.NewKratosPublicClient(httpClient)
 	if err != nil {
 		setupLog.Error(err, "An admin address for kratos must be configured")
 		panic(err)
 	}
 
-	conndetails := clients.NewKetoConnectionDetailsFromEnv()
-	ketoClient, err := clients.NewKetoGrpcClient(context.Background(), conndetails)
+	conndetails := common.NewKetoConnectionDetailsFromEnv()
+	ketoClient, err := common.NewKetoGrpcClient(ctx, conndetails)
 	if err != nil {
 		setupLog.Error(err, "Failed to setup Keto gRPC client")
 		panic(err)
 	}
 
-	hydraAdminClient, err := clients.NewHydraAdminClient()
+	hydraAdminClient, err := common.NewHydraAdminClient(httpClient)
 	if err != nil {
 		setupLog.Error(err, "An admin address for hydra must be configured")
 		panic(err)
 	}
 
-	controllerClient, err := clients.NewControllerClient()
+	controllerClient, err := common.NewControllerClient(httpClient)
 	if err != nil {
 		setupLog.Error(err, "Failed to setup controller client")
 		panic(err)
 	}
 
-	clientWrapper := &clients.ClientWrapper{
+	clientCtx := &common.ClientContext{
 		ControllerClient:   controllerClient,
 		KratosAdminClient:  kratosAdminClient,
 		KratosPublicClient: kratosPublicClient,
 		KetoClient:         ketoClient,
 		HydraClient:        hydraAdminClient,
 		Tracer:             tracer,
-		Log:                ctrl.Log.WithName("clients"),
+		Log:                ctrl.Log,
+		// Log:                ctrl.Log.WithName("clients"),
 	}
 
-	resolver := &resolvers.Resolver{
-		C: clientWrapper,
-	}
-
-	directives := &directives.Directive{
-		C: clientWrapper,
-	}
-
-	handlers := &handlers.Handler{
-		C:           clientWrapper,
-		Propagators: otel.GetTextMapPropagator(),
-		Log:         ctrl.Log.WithName("handlers"),
-	}
-
-	if err := serve(ctx, resolver, directives, handlers); err != nil {
+	if err := serve(ctx, clientCtx); err != nil {
 		setupLog.Error(err, "failed to serve")
 	}
 }
 
-func serve(ctx context.Context, resolver *resolvers.Resolver, directives *directives.Directive, handlers *handlers.Handler) (err error) {
+func serve(ctx context.Context, clientCtx *common.ClientContext) (err error) {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -134,12 +123,17 @@ func serve(ctx context.Context, resolver *resolvers.Resolver, directives *direct
 		Debug:            false,
 	}).Handler)
 
-	gqlConfig := generated.Config{Resolvers: resolver}
+	// adds our middleware with clients to the router
+	router.Use(common.CreateContext(clientCtx))
 
-	gqlConfig.Directives.IsAuthenticated = directives.IsAuthenticated
-
-	//TODO: change all create and delete mutations so that name and namespace are used directly rather than the wrapped in the input
-	gqlConfig.Directives.CheckPermissions = directives.CheckPermissions
+	gqlConfig := generated.Config{
+		Resolvers: &resolvers.Resolver{},
+		Directives: generated.DirectiveRoot{
+			IsAuthenticated: directives.IsAuthenticated,
+			//TODO: change all create and delete mutations so that name and namespace are used directly rather than the wrapped in the input
+			CheckPermissions: directives.CheckPermissions,
+		},
+	}
 
 	gqlSrv := gqlHandler.NewDefaultServer(generated.NewExecutableSchema(gqlConfig))
 	gqlSrv.Use(otelgqlgen.Middleware())

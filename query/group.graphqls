@@ -1,11 +1,23 @@
-query ListGroups { # TODO: we should also support getting a single group
+query GetGroup($name: String!) {
+  getGroup(name: $name) {
+    ...GroupFragment
+  }
+}
+
+query ListGroups {
   listGroups {
     ...GroupFragment
   }
 }
 
-mutation UpdateGroup($name: String!, $members: [UserInput!]) { # TODO: for consistency we should probably split create and update mutations
-  group(name: $name, members: $members) {
+mutation UpdateGroup($name: String!, $members: [UserInput!]) {
+  updateGroup(name: $name, members: $members) {
+    ...GroupFragment
+  }
+}
+
+mutation CreateGroup($name: String!, $members: [UserInput!]) {
+  createGroup(name: $name, members: $members) {
     ...GroupFragment
   }
 }

@@ -14,9 +14,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/pluralsh/trace-shield-controller/api/observability/v1alpha1"
-	"github.com/pluralsh/trace-shield/graph/custom"
-	"github.com/pluralsh/trace-shield/graph/model"
+	"github.com/traceshield/trace-shield-controller/api/observability/v1alpha1"
+	"github.com/traceshield/trace-shield/graph/custom"
+	"github.com/traceshield/trace-shield/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -240,6 +240,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		AcceptOAuth2ConsentRequest func(childComplexity int, challenge string, grantAccessTokenAudience []string, grantScope []string, remember *bool, rememberFor *int64) int
 		AcceptOAuth2LoginRequest   func(childComplexity int, challenge string, acr *string, amr []string, context map[string]interface{}, remember *bool, rememberFor *int64, subject string) int
+		CreateGroup                func(childComplexity int, name string, members []*model.UserInput) int
 		CreateOAuth2Client         func(childComplexity int, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) int
 		CreateObservabilityTenant  func(childComplexity int, id string, name *string, admins *model.ObservabilityTenantPermissionBindingsInput, metricsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsWriters *model.ObservabilityTenantPermissionBindingsInput, metricsDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, metricsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsWriters *model.ObservabilityTenantPermissionBindingsInput, logsReaders *model.ObservabilityTenantPermissionBindingsInput, logsWriters *model.ObservabilityTenantPermissionBindingsInput, logsDeleters *model.ObservabilityTenantPermissionBindingsInput, logsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, logsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, logsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, tracesReaders *model.ObservabilityTenantPermissionBindingsInput, tracesWriters *model.ObservabilityTenantPermissionBindingsInput, limits *model.ObservabilityTenantLimitsInput) int
 		CreateUser                 func(childComplexity int, email string, name *model.NameInput) int
@@ -247,10 +248,10 @@ type ComplexityRoot struct {
 		DeleteOAuth2Client         func(childComplexity int, clientID string) int
 		DeleteObservabilityTenant  func(childComplexity int, id string) int
 		DeleteUser                 func(childComplexity int, id string) int
-		Group                      func(childComplexity int, name string, members []*model.UserInput) int
 		Organization               func(childComplexity int, admins []*model.UserInput) int
 		RejectOAuth2ConsentRequest func(childComplexity int, challenge string) int
 		RejectOAuth2LoginRequest   func(childComplexity int, challenge string) int
+		UpdateGroup                func(childComplexity int, name string, members []*model.UserInput) int
 		UpdateOAuth2Client         func(childComplexity int, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientID string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) int
 		UpdateObservabilityTenant  func(childComplexity int, id string, name *string, admins *model.ObservabilityTenantPermissionBindingsInput, metricsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsWriters *model.ObservabilityTenantPermissionBindingsInput, metricsDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, metricsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, metricsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsReaders *model.ObservabilityTenantPermissionBindingsInput, metricsAlertsWriters *model.ObservabilityTenantPermissionBindingsInput, logsReaders *model.ObservabilityTenantPermissionBindingsInput, logsWriters *model.ObservabilityTenantPermissionBindingsInput, logsDeleters *model.ObservabilityTenantPermissionBindingsInput, logsRulesReaders *model.ObservabilityTenantPermissionBindingsInput, logsRulesWriters *model.ObservabilityTenantPermissionBindingsInput, logsRulesDeleters *model.ObservabilityTenantPermissionBindingsInput, tracesReaders *model.ObservabilityTenantPermissionBindingsInput, tracesWriters *model.ObservabilityTenantPermissionBindingsInput, limits *model.ObservabilityTenantLimitsInput) int
 	}
@@ -416,6 +417,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		GetGroup                 func(childComplexity int, name string) int
 		GetOAuth2Client          func(childComplexity int, clientID string) int
 		GetObservabilityTenant   func(childComplexity int, id string) int
 		GetUser                  func(childComplexity int, id *string, email *string) int
@@ -520,7 +522,8 @@ type LoginBindingsResolver interface {
 type MutationResolver interface {
 	CreateUser(ctx context.Context, email string, name *model.NameInput) (*model.User, error)
 	DeleteUser(ctx context.Context, id string) (*model.User, error)
-	Group(ctx context.Context, name string, members []*model.UserInput) (*model.Group, error)
+	CreateGroup(ctx context.Context, name string, members []*model.UserInput) (*model.Group, error)
+	UpdateGroup(ctx context.Context, name string, members []*model.UserInput) (*model.Group, error)
 	DeleteGroup(ctx context.Context, name string) (*model.Group, error)
 	CreateOAuth2Client(ctx context.Context, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) (*model.OAuth2Client, error)
 	UpdateOAuth2Client(ctx context.Context, allowedCorsOrigins []string, audience []string, authorizationCodeGrantAccessTokenLifespan *string, authorizationCodeGrantIDTokenLifespan *string, authorizationCodeGrantRefreshTokenLifespan *string, backChannelLogoutSessionRequired *bool, backChannelLogoutURI *string, clientCredentialsGrantAccessTokenLifespan *string, clientID string, clientName *string, clientSecret *string, clientSecretExpiresAt *int64, clientURI *string, contacts []string, frontchannelLogoutSessionRequired *bool, frontchannelLogoutURI *string, grantTypes []string, implicitGrantAccessTokenLifespan *string, implicitGrantIDTokenLifespan *string, jwks map[string]interface{}, jwksURI *string, jwtBearerGrantAccessTokenLifespan *string, logoURI *string, metadata map[string]interface{}, policyURI *string, postLogoutRedirectUris []string, redirectUris []string, responseTypes []string, scope *string, sectorIdentifierURI *string, subjectType *string, tokenEndpointAuthMethod *string, tokenEndpointAuthSigningAlgorithm *string, tosURI *string, userinfoSignedResponseAlgorithm *string, loginBindings *model.LoginBindingsInput) (*model.OAuth2Client, error)
@@ -570,6 +573,7 @@ type QueryResolver interface {
 	ListUsers(ctx context.Context) ([]*model.User, error)
 	GetUser(ctx context.Context, id *string, email *string) (*model.User, error)
 	ListGroups(ctx context.Context) ([]*model.Group, error)
+	GetGroup(ctx context.Context, name string) (*model.Group, error)
 	ListOAuth2Clients(ctx context.Context) ([]*model.OAuth2Client, error)
 	GetOAuth2Client(ctx context.Context, clientID string) (*model.OAuth2Client, error)
 	Oauth2ConsentRequest(ctx context.Context, challenge string) (*model.OAuth2ConsentRequest, error)
@@ -1703,6 +1707,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.AcceptOAuth2LoginRequest(childComplexity, args["challenge"].(string), args["acr"].(*string), args["amr"].([]string), args["context"].(map[string]interface{}), args["remember"].(*bool), args["rememberFor"].(*int64), args["subject"].(string)), true
 
+	case "Mutation.createGroup":
+		if e.complexity.Mutation.CreateGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateGroup(childComplexity, args["name"].(string), args["members"].([]*model.UserInput)), true
+
 	case "Mutation.createOAuth2Client":
 		if e.complexity.Mutation.CreateOAuth2Client == nil {
 			break
@@ -1787,18 +1803,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
 
-	case "Mutation.group":
-		if e.complexity.Mutation.Group == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_group_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.Group(childComplexity, args["name"].(string), args["members"].([]*model.UserInput)), true
-
 	case "Mutation.organization":
 		if e.complexity.Mutation.Organization == nil {
 			break
@@ -1834,6 +1838,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RejectOAuth2LoginRequest(childComplexity, args["challenge"].(string)), true
+
+	case "Mutation.updateGroup":
+		if e.complexity.Mutation.UpdateGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateGroup(childComplexity, args["name"].(string), args["members"].([]*model.UserInput)), true
 
 	case "Mutation.updateOAuth2Client":
 		if e.complexity.Mutation.UpdateOAuth2Client == nil {
@@ -2664,6 +2680,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PolicyMatch.MatchType(childComplexity), true
 
+	case "Query.getGroup":
+		if e.complexity.Query.GetGroup == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getGroup_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetGroup(childComplexity, args["name"].(string)), true
+
 	case "Query.getOAuth2Client":
 		if e.complexity.Query.GetOAuth2Client == nil {
 			break
@@ -3339,11 +3367,26 @@ input GroupInput {
 extend type Query {
   "Get a list of all users."
   listGroups: [Group!] @checkPermissions @isAuthenticated
+
+  "Get a group by its name."
+  getGroup(
+    "The unique name of the group."
+    name: String!
+  ): Group! @checkPermissions @isAuthenticated
 }
 
 extend type Mutation {
-  "Create or update a group."
-  group(
+  "Create a group."
+  createGroup(
+    "The unique name of the group."
+    name: String!
+
+    "The IDs or email addresses of the users that are members of the group."
+    members: [UserInput!]
+  ): Group! @checkPermissions @isAuthenticated
+
+  "Update a group."
+  updateGroup(
     "The unique name of the group."
     name: String!
 
@@ -4967,6 +5010,30 @@ func (ec *executionContext) field_Mutation_acceptOAuth2LoginRequest_args(ctx con
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	var arg1 []*model.UserInput
+	if tmp, ok := rawArgs["members"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("members"))
+		arg1, err = ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createOAuth2Client_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -5279,7 +5346,7 @@ func (ec *executionContext) field_Mutation_createOAuth2Client_args(ctx context.C
 	var arg34 *model.LoginBindingsInput
 	if tmp, ok := rawArgs["loginBindings"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loginBindings"))
-		arg34, err = ec.unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx, tmp)
+		arg34, err = ec.unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5312,7 +5379,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg2 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["admins"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("admins"))
-		arg2, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg2, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5321,7 +5388,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg3 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsReaders"))
-		arg3, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg3, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5330,7 +5397,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg4 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsWriters"))
-		arg4, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg4, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5339,7 +5406,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg5 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsDeleters"))
-		arg5, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg5, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5348,7 +5415,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg6 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesReaders"))
-		arg6, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg6, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5357,7 +5424,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg7 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesWriters"))
-		arg7, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg7, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5366,7 +5433,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg8 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesDeleters"))
-		arg8, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg8, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5375,7 +5442,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg9 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsAlertsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsAlertsReaders"))
-		arg9, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg9, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5384,7 +5451,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg10 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsAlertsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsAlertsWriters"))
-		arg10, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg10, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5393,7 +5460,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg11 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsReaders"))
-		arg11, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg11, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5402,7 +5469,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg12 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsWriters"))
-		arg12, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg12, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5411,7 +5478,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg13 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsDeleters"))
-		arg13, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg13, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5420,7 +5487,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg14 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesReaders"))
-		arg14, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg14, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5429,7 +5496,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg15 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesWriters"))
-		arg15, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg15, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5438,7 +5505,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg16 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesDeleters"))
-		arg16, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg16, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5447,7 +5514,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg17 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["tracesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tracesReaders"))
-		arg17, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg17, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5456,7 +5523,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg18 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["tracesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tracesWriters"))
-		arg18, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg18, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5465,7 +5532,7 @@ func (ec *executionContext) field_Mutation_createObservabilityTenant_args(ctx co
 	var arg19 *model.ObservabilityTenantLimitsInput
 	if tmp, ok := rawArgs["limits"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limits"))
-		arg19, err = ec.unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx, tmp)
+		arg19, err = ec.unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5489,7 +5556,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg1 *model.NameInput
 	if tmp, ok := rawArgs["name"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg1, err = ec.unmarshalONameInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐNameInput(ctx, tmp)
+		arg1, err = ec.unmarshalONameInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐNameInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5558,37 +5625,13 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_group_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["name"] = arg0
-	var arg1 []*model.UserInput
-	if tmp, ok := rawArgs["members"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("members"))
-		arg1, err = ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["members"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_organization_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 []*model.UserInput
 	if tmp, ok := rawArgs["admins"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("admins"))
-		arg0, err = ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, tmp)
+		arg0, err = ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5624,6 +5667,30 @@ func (ec *executionContext) field_Mutation_rejectOAuth2LoginRequest_args(ctx con
 		}
 	}
 	args["challenge"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	var arg1 []*model.UserInput
+	if tmp, ok := rawArgs["members"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("members"))
+		arg1, err = ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg1
 	return args, nil
 }
 
@@ -5948,7 +6015,7 @@ func (ec *executionContext) field_Mutation_updateOAuth2Client_args(ctx context.C
 	var arg35 *model.LoginBindingsInput
 	if tmp, ok := rawArgs["loginBindings"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loginBindings"))
-		arg35, err = ec.unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx, tmp)
+		arg35, err = ec.unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5981,7 +6048,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg2 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["admins"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("admins"))
-		arg2, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg2, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5990,7 +6057,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg3 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsReaders"))
-		arg3, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg3, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5999,7 +6066,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg4 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsWriters"))
-		arg4, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg4, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6008,7 +6075,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg5 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsDeleters"))
-		arg5, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg5, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6017,7 +6084,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg6 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesReaders"))
-		arg6, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg6, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6026,7 +6093,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg7 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesWriters"))
-		arg7, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg7, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6035,7 +6102,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg8 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsRulesDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsRulesDeleters"))
-		arg8, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg8, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6044,7 +6111,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg9 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsAlertsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsAlertsReaders"))
-		arg9, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg9, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6053,7 +6120,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg10 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["metricsAlertsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsAlertsWriters"))
-		arg10, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg10, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6062,7 +6129,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg11 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsReaders"))
-		arg11, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg11, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6071,7 +6138,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg12 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsWriters"))
-		arg12, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg12, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6080,7 +6147,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg13 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsDeleters"))
-		arg13, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg13, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6089,7 +6156,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg14 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesReaders"))
-		arg14, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg14, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6098,7 +6165,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg15 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesWriters"))
-		arg15, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg15, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6107,7 +6174,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg16 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["logsRulesDeleters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logsRulesDeleters"))
-		arg16, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg16, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6116,7 +6183,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg17 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["tracesReaders"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tracesReaders"))
-		arg17, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg17, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6125,7 +6192,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg18 *model.ObservabilityTenantPermissionBindingsInput
 	if tmp, ok := rawArgs["tracesWriters"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tracesWriters"))
-		arg18, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
+		arg18, err = ec.unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6134,7 +6201,7 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 	var arg19 *model.ObservabilityTenantLimitsInput
 	if tmp, ok := rawArgs["limits"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limits"))
-		arg19, err = ec.unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx, tmp)
+		arg19, err = ec.unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6144,6 +6211,21 @@ func (ec *executionContext) field_Mutation_updateObservabilityTenant_args(ctx co
 }
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getGroup_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -6516,7 +6598,7 @@ func (ec *executionContext) _BlockedQuery_types(ctx context.Context, field graph
 	}
 	res := resTmp.([]v1alpha1.BlockedQueryType)
 	fc.Result = res
-	return ec.marshalOBlockedQueryType2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx, field.Selections, res)
+	return ec.marshalOBlockedQueryType2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_BlockedQuery_types(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6668,7 +6750,7 @@ func (ec *executionContext) _FilterPolicy_include(ctx context.Context, field gra
 	}
 	res := resTmp.(*v1alpha1.PolicyMatch)
 	fc.Result = res
-	return ec.marshalOPolicyMatch2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, field.Selections, res)
+	return ec.marshalOPolicyMatch2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FilterPolicy_include(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6712,7 +6794,7 @@ func (ec *executionContext) _FilterPolicy_exclude(ctx context.Context, field gra
 	}
 	res := resTmp.(*v1alpha1.PolicyMatch)
 	fc.Result = res
-	return ec.marshalOPolicyMatch2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, field.Selections, res)
+	return ec.marshalOPolicyMatch2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_FilterPolicy_exclude(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6797,7 +6879,7 @@ func (ec *executionContext) _Group_members(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Group_members(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6847,7 +6929,7 @@ func (ec *executionContext) _LoginBindings_users(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LoginBindings_users(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6897,7 +6979,7 @@ func (ec *executionContext) _LoginBindings_groups(ctx context.Context, field gra
 	}
 	res := resTmp.([]*model.Group)
 	fc.Result = res
-	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LoginBindings_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8613,7 +8695,7 @@ func (ec *executionContext) _LokiLimits_rulerAlertManagerConfig(ctx context.Cont
 	}
 	res := resTmp.(*v1alpha1.RulerAlertManagerConfig)
 	fc.Result = res
-	return ec.marshalORulerAlertManagerConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx, field.Selections, res)
+	return ec.marshalORulerAlertManagerConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LokiLimits_rulerAlertManagerConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8897,7 +8979,7 @@ func (ec *executionContext) _LokiLimits_streamRetention(ctx context.Context, fie
 	}
 	res := resTmp.([]v1alpha1.StreamRetention)
 	fc.Result = res
-	return ec.marshalOStreamRetention2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx, field.Selections, res)
+	return ec.marshalOStreamRetention2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LokiLimits_streamRetention(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8943,7 +9025,7 @@ func (ec *executionContext) _LokiLimits_shardStreams(ctx context.Context, field 
 	}
 	res := resTmp.(*v1alpha1.ShardstreamsConfig)
 	fc.Result = res
-	return ec.marshalOShardstreamsConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx, field.Selections, res)
+	return ec.marshalOShardstreamsConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LokiLimits_shardStreams(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8989,7 +9071,7 @@ func (ec *executionContext) _LokiLimits_blockedQueries(ctx context.Context, fiel
 	}
 	res := resTmp.([]v1alpha1.BlockedQuery)
 	fc.Result = res
-	return ec.marshalOBlockedQuery2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx, field.Selections, res)
+	return ec.marshalOBlockedQuery2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LokiLimits_blockedQueries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9192,7 +9274,7 @@ func (ec *executionContext) _MatchPolicyAttribute_value(ctx context.Context, fie
 	}
 	res := resTmp.(v1alpha1.WrappedMap)
 	fc.Result = res
-	return ec.marshalOMap2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx, field.Selections, res)
+	return ec.marshalOMap2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MatchPolicyAttribute_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9876,7 +9958,7 @@ func (ec *executionContext) _MimirLimits_metricRelabelConfigs(ctx context.Contex
 	}
 	res := resTmp.([]v1alpha1.RelabelConfig)
 	fc.Result = res
-	return ec.marshalORelabelConfig2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalORelabelConfig2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MimirLimits_metricRelabelConfigs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12380,7 +12462,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12391,7 +12473,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12470,7 +12552,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12481,7 +12563,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12520,8 +12602,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_group(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_group(ctx, field)
+func (ec *executionContext) _Mutation_createGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createGroup(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12535,7 +12617,7 @@ func (ec *executionContext) _Mutation_group(ctx context.Context, field graphql.C
 	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().Group(rctx, fc.Args["name"].(string), fc.Args["members"].([]*model.UserInput))
+			return ec.resolvers.Mutation().CreateGroup(rctx, fc.Args["name"].(string), fc.Args["members"].([]*model.UserInput))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.CheckPermissions == nil {
@@ -12560,7 +12642,7 @@ func (ec *executionContext) _Mutation_group(ctx context.Context, field graphql.C
 		if data, ok := tmp.(*model.Group); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.Group`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Group`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12571,10 +12653,10 @@ func (ec *executionContext) _Mutation_group(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_group(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12597,7 +12679,91 @@ func (ec *executionContext) fieldContext_Mutation_group(ctx context.Context, fie
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_group_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createGroup_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateGroup(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UpdateGroup(rctx, fc.Args["name"].(string), fc.Args["members"].([]*model.UserInput))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.CheckPermissions == nil {
+				return nil, errors.New("directive checkPermissions is not implemented")
+			}
+			return ec.directives.CheckPermissions(ctx, nil, directive0)
+		}
+		directive2 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.IsAuthenticated == nil {
+				return nil, errors.New("directive isAuthenticated is not implemented")
+			}
+			return ec.directives.IsAuthenticated(ctx, nil, directive1)
+		}
+
+		tmp, err := directive2(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Group); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Group`, tmp)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Group)
+	fc.Result = res
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Group_name(ctx, field)
+			case "members":
+				return ec.fieldContext_Group_members(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Group", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateGroup_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -12644,7 +12810,7 @@ func (ec *executionContext) _Mutation_deleteGroup(ctx context.Context, field gra
 		if data, ok := tmp.(*model.Group); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.Group`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Group`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12655,7 +12821,7 @@ func (ec *executionContext) _Mutation_deleteGroup(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Group)
 	fc.Result = res
-	return ec.marshalNGroup2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12728,7 +12894,7 @@ func (ec *executionContext) _Mutation_createOAuth2Client(ctx context.Context, fi
 		if data, ok := tmp.(*model.OAuth2Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.OAuth2Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.OAuth2Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12739,7 +12905,7 @@ func (ec *executionContext) _Mutation_createOAuth2Client(ctx context.Context, fi
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createOAuth2Client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12886,7 +13052,7 @@ func (ec *executionContext) _Mutation_updateOAuth2Client(ctx context.Context, fi
 		if data, ok := tmp.(*model.OAuth2Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.OAuth2Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.OAuth2Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -12897,7 +13063,7 @@ func (ec *executionContext) _Mutation_updateOAuth2Client(ctx context.Context, fi
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateOAuth2Client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13044,7 +13210,7 @@ func (ec *executionContext) _Mutation_deleteOAuth2Client(ctx context.Context, fi
 		if data, ok := tmp.(*model.OAuth2Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.OAuth2Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.OAuth2Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -13055,7 +13221,7 @@ func (ec *executionContext) _Mutation_deleteOAuth2Client(ctx context.Context, fi
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteOAuth2Client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13187,7 +13353,7 @@ func (ec *executionContext) _Mutation_acceptOAuth2ConsentRequest(ctx context.Con
 	}
 	res := resTmp.(*model.OAuth2RedirectTo)
 	fc.Result = res
-	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
+	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_acceptOAuth2ConsentRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13243,7 +13409,7 @@ func (ec *executionContext) _Mutation_rejectOAuth2ConsentRequest(ctx context.Con
 	}
 	res := resTmp.(*model.OAuth2RedirectTo)
 	fc.Result = res
-	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
+	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_rejectOAuth2ConsentRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13299,7 +13465,7 @@ func (ec *executionContext) _Mutation_acceptOAuth2LoginRequest(ctx context.Conte
 	}
 	res := resTmp.(*model.OAuth2RedirectTo)
 	fc.Result = res
-	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
+	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_acceptOAuth2LoginRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13355,7 +13521,7 @@ func (ec *executionContext) _Mutation_rejectOAuth2LoginRequest(ctx context.Conte
 	}
 	res := resTmp.(*model.OAuth2RedirectTo)
 	fc.Result = res
-	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
+	return ec.marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_rejectOAuth2LoginRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13426,7 +13592,7 @@ func (ec *executionContext) _Mutation_createObservabilityTenant(ctx context.Cont
 		if data, ok := tmp.(*model.ObservabilityTenant); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.ObservabilityTenant`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.ObservabilityTenant`, tmp)
 	})
 
 	if resTmp == nil {
@@ -13437,7 +13603,7 @@ func (ec *executionContext) _Mutation_createObservabilityTenant(ctx context.Cont
 	}
 	res := resTmp.(*model.ObservabilityTenant)
 	fc.Result = res
-	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
+	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createObservabilityTenant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13546,7 +13712,7 @@ func (ec *executionContext) _Mutation_updateObservabilityTenant(ctx context.Cont
 		if data, ok := tmp.(*model.ObservabilityTenant); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.ObservabilityTenant`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.ObservabilityTenant`, tmp)
 	})
 
 	if resTmp == nil {
@@ -13557,7 +13723,7 @@ func (ec *executionContext) _Mutation_updateObservabilityTenant(ctx context.Cont
 	}
 	res := resTmp.(*model.ObservabilityTenant)
 	fc.Result = res
-	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
+	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateObservabilityTenant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13666,7 +13832,7 @@ func (ec *executionContext) _Mutation_deleteObservabilityTenant(ctx context.Cont
 		if data, ok := tmp.(*model.ObservabilityTenant); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.ObservabilityTenant`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.ObservabilityTenant`, tmp)
 	})
 
 	if resTmp == nil {
@@ -13677,7 +13843,7 @@ func (ec *executionContext) _Mutation_deleteObservabilityTenant(ctx context.Cont
 	}
 	res := resTmp.(*model.ObservabilityTenant)
 	fc.Result = res
-	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
+	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteObservabilityTenant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13786,7 +13952,7 @@ func (ec *executionContext) _Mutation_organization(ctx context.Context, field gr
 		if data, ok := tmp.(*model.Organization); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.Organization`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Organization`, tmp)
 	})
 
 	if resTmp == nil {
@@ -13797,7 +13963,7 @@ func (ec *executionContext) _Mutation_organization(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Organization)
 	fc.Result = res
-	return ec.marshalNOrganization2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx, field.Selections, res)
+	return ec.marshalNOrganization2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_organization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14002,7 +14168,7 @@ func (ec *executionContext) _NotifierConfig_basicAuth(ctx context.Context, field
 	}
 	res := resTmp.(*v1alpha1.NotifierBasicAuth)
 	fc.Result = res
-	return ec.marshalONotifierBasicAuth2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx, field.Selections, res)
+	return ec.marshalONotifierBasicAuth2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_NotifierConfig_basicAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14046,7 +14212,7 @@ func (ec *executionContext) _NotifierConfig_headerAuth(ctx context.Context, fiel
 	}
 	res := resTmp.(*v1alpha1.NotifierHeaderAuth)
 	fc.Result = res
-	return ec.marshalONotifierHeaderAuth2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx, field.Selections, res)
+	return ec.marshalONotifierHeaderAuth2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_NotifierConfig_headerAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14092,7 +14258,7 @@ func (ec *executionContext) _NotifierConfig_tls(ctx context.Context, field graph
 	}
 	res := resTmp.(*v1alpha1.NotifierTLSClientConfig)
 	fc.Result = res
-	return ec.marshalONotifierTLSClientConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx, field.Selections, res)
+	return ec.marshalONotifierTLSClientConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_NotifierConfig_tls(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15970,7 +16136,7 @@ func (ec *executionContext) _OAuth2Client_loginBindings(ctx context.Context, fie
 	}
 	res := resTmp.(*model.LoginBindings)
 	fc.Result = res
-	return ec.marshalOLoginBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindings(ctx, field.Selections, res)
+	return ec.marshalOLoginBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OAuth2Client_loginBindings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16134,7 +16300,7 @@ func (ec *executionContext) _OAuth2ConsentRequest_client(ctx context.Context, fi
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OAuth2ConsentRequest_client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16366,7 +16532,7 @@ func (ec *executionContext) _OAuth2ConsentRequest_oidcContext(ctx context.Contex
 	}
 	res := resTmp.(*model.OidcContext)
 	fc.Result = res
-	return ec.marshalOOidcContext2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx, field.Selections, res)
+	return ec.marshalOOidcContext2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OAuth2ConsentRequest_oidcContext(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16691,7 +16857,7 @@ func (ec *executionContext) _OAuth2LoginRequest_client(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OAuth2LoginRequest_client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16809,7 +16975,7 @@ func (ec *executionContext) _OAuth2LoginRequest_oidcContext(ctx context.Context,
 	}
 	res := resTmp.(*model.OidcContext)
 	fc.Result = res
-	return ec.marshalOOidcContext2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx, field.Selections, res)
+	return ec.marshalOOidcContext2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OAuth2LoginRequest_oidcContext(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17248,7 +17414,7 @@ func (ec *executionContext) _ObservabilityTenant_admins(ctx context.Context, fie
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_admins(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17294,7 +17460,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsReaders(ctx context.Cont
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17340,7 +17506,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsWriters(ctx context.Cont
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17386,7 +17552,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsDeleters(ctx context.Con
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsDeleters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17432,7 +17598,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsRulesReaders(ctx context
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsRulesReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17478,7 +17644,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsRulesWriters(ctx context
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsRulesWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17524,7 +17690,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsRulesDeleters(ctx contex
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsRulesDeleters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17570,7 +17736,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsAlertsReaders(ctx contex
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsAlertsReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17616,7 +17782,7 @@ func (ec *executionContext) _ObservabilityTenant_metricsAlertsWriters(ctx contex
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_metricsAlertsWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17662,7 +17828,7 @@ func (ec *executionContext) _ObservabilityTenant_logsReaders(ctx context.Context
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17708,7 +17874,7 @@ func (ec *executionContext) _ObservabilityTenant_logsWriters(ctx context.Context
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17754,7 +17920,7 @@ func (ec *executionContext) _ObservabilityTenant_logsDeleters(ctx context.Contex
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsDeleters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17800,7 +17966,7 @@ func (ec *executionContext) _ObservabilityTenant_logsRulesReaders(ctx context.Co
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsRulesReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17846,7 +18012,7 @@ func (ec *executionContext) _ObservabilityTenant_logsRulesWriters(ctx context.Co
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsRulesWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17892,7 +18058,7 @@ func (ec *executionContext) _ObservabilityTenant_logsRulesDeleters(ctx context.C
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_logsRulesDeleters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17938,7 +18104,7 @@ func (ec *executionContext) _ObservabilityTenant_tracesReaders(ctx context.Conte
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_tracesReaders(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17984,7 +18150,7 @@ func (ec *executionContext) _ObservabilityTenant_tracesWriters(ctx context.Conte
 	}
 	res := resTmp.(*model.ObservabilityTenantPermissionBindings)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_tracesWriters(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18030,7 +18196,7 @@ func (ec *executionContext) _ObservabilityTenant_limits(ctx context.Context, fie
 	}
 	res := resTmp.(*model.ObservabilityTenantLimits)
 	fc.Result = res
-	return ec.marshalOObservabilityTenantLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimits(ctx, field.Selections, res)
+	return ec.marshalOObservabilityTenantLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimits(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenant_limits(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18076,7 +18242,7 @@ func (ec *executionContext) _ObservabilityTenantLimits_mimir(ctx context.Context
 	}
 	res := resTmp.(*v1alpha1.MimirLimits)
 	fc.Result = res
-	return ec.marshalOMimirLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimits(ctx, field.Selections, res)
+	return ec.marshalOMimirLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimits(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantLimits_mimir(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18280,7 +18446,7 @@ func (ec *executionContext) _ObservabilityTenantLimits_loki(ctx context.Context,
 	}
 	res := resTmp.(*v1alpha1.LokiLimits)
 	fc.Result = res
-	return ec.marshalOLokiLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimits(ctx, field.Selections, res)
+	return ec.marshalOLokiLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimits(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantLimits_loki(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18434,7 +18600,7 @@ func (ec *executionContext) _ObservabilityTenantLimits_tempo(ctx context.Context
 	}
 	res := resTmp.(*v1alpha1.TempoLimits)
 	fc.Result = res
-	return ec.marshalOTempoLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimits(ctx, field.Selections, res)
+	return ec.marshalOTempoLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimits(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantLimits_tempo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18542,7 +18708,7 @@ func (ec *executionContext) _ObservabilityTenantPermissionBindings_users(ctx con
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantPermissionBindings_users(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18592,7 +18758,7 @@ func (ec *executionContext) _ObservabilityTenantPermissionBindings_groups(ctx co
 	}
 	res := resTmp.([]*model.Group)
 	fc.Result = res
-	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantPermissionBindings_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18636,7 +18802,7 @@ func (ec *executionContext) _ObservabilityTenantPermissionBindings_oauth2Clients
 	}
 	res := resTmp.([]*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx, field.Selections, res)
+	return ec.marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ObservabilityTenantPermissionBindings_oauth2Clients(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18944,7 +19110,7 @@ func (ec *executionContext) _Organization_admins(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalOUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Organization_admins(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18994,7 +19160,7 @@ func (ec *executionContext) _PolicyMatch_matchType(ctx context.Context, field gr
 	}
 	res := resTmp.(*v1alpha1.MatchType)
 	fc.Result = res
-	return ec.marshalOMatchType2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx, field.Selections, res)
+	return ec.marshalOMatchType2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PolicyMatch_matchType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19032,7 +19198,7 @@ func (ec *executionContext) _PolicyMatch_attributes(ctx context.Context, field g
 	}
 	res := resTmp.([]v1alpha1.MatchPolicyAttribute)
 	fc.Result = res
-	return ec.marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx, field.Selections, res)
+	return ec.marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PolicyMatch_attributes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19094,7 +19260,7 @@ func (ec *executionContext) _Query_listUsers(ctx context.Context, field graphql.
 		if data, ok := tmp.([]*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/pluralsh/trace-shield/graph/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/traceshield/trace-shield/graph/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19105,7 +19271,7 @@ func (ec *executionContext) _Query_listUsers(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_listUsers(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19173,7 +19339,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 		if data, ok := tmp.(*model.User); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.User`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.User`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19184,7 +19350,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19263,7 +19429,7 @@ func (ec *executionContext) _Query_listGroups(ctx context.Context, field graphql
 		if data, ok := tmp.([]*model.Group); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/pluralsh/trace-shield/graph/model.Group`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/traceshield/trace-shield/graph/model.Group`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19271,7 +19437,7 @@ func (ec *executionContext) _Query_listGroups(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.Group)
 	fc.Result = res
-	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_listGroups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19289,6 +19455,90 @@ func (ec *executionContext) fieldContext_Query_listGroups(ctx context.Context, f
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Group", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getGroup(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getGroup(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp := ec._fieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().GetGroup(rctx, fc.Args["name"].(string))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.CheckPermissions == nil {
+				return nil, errors.New("directive checkPermissions is not implemented")
+			}
+			return ec.directives.CheckPermissions(ctx, nil, directive0)
+		}
+		directive2 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.IsAuthenticated == nil {
+				return nil, errors.New("directive isAuthenticated is not implemented")
+			}
+			return ec.directives.IsAuthenticated(ctx, nil, directive1)
+		}
+
+		tmp, err := directive2(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Group); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Group`, tmp)
+	})
+
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Group)
+	fc.Result = res
+	return ec.marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getGroup(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Group_name(ctx, field)
+			case "members":
+				return ec.fieldContext_Group_members(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Group", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getGroup_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -19333,7 +19583,7 @@ func (ec *executionContext) _Query_listOAuth2Clients(ctx context.Context, field 
 		if data, ok := tmp.([]*model.OAuth2Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/pluralsh/trace-shield/graph/model.OAuth2Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/traceshield/trace-shield/graph/model.OAuth2Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19344,7 +19594,7 @@ func (ec *executionContext) _Query_listOAuth2Clients(ctx context.Context, field 
 	}
 	res := resTmp.([]*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx, field.Selections, res)
+	return ec.marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_listOAuth2Clients(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19480,7 +19730,7 @@ func (ec *executionContext) _Query_getOAuth2Client(ctx context.Context, field gr
 		if data, ok := tmp.(*model.OAuth2Client); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.OAuth2Client`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.OAuth2Client`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19488,7 +19738,7 @@ func (ec *executionContext) _Query_getOAuth2Client(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.OAuth2Client)
 	fc.Result = res
-	return ec.marshalOOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
+	return ec.marshalOOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getOAuth2Client(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19617,7 +19867,7 @@ func (ec *executionContext) _Query_oauth2ConsentRequest(ctx context.Context, fie
 	}
 	res := resTmp.(*model.OAuth2ConsentRequest)
 	fc.Result = res
-	return ec.marshalOOAuth2ConsentRequest2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ConsentRequest(ctx, field.Selections, res)
+	return ec.marshalOOAuth2ConsentRequest2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ConsentRequest(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_oauth2ConsentRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19696,7 +19946,7 @@ func (ec *executionContext) _Query_oauth2LoginRequest(ctx context.Context, field
 	}
 	res := resTmp.(*model.OAuth2LoginRequest)
 	fc.Result = res
-	return ec.marshalOOAuth2LoginRequest2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2LoginRequest(ctx, field.Selections, res)
+	return ec.marshalOOAuth2LoginRequest2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2LoginRequest(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_oauth2LoginRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19785,7 +20035,7 @@ func (ec *executionContext) _Query_listObservabilityTenants(ctx context.Context,
 		if data, ok := tmp.([]*model.ObservabilityTenant); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/pluralsh/trace-shield/graph/model.ObservabilityTenant`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/traceshield/trace-shield/graph/model.ObservabilityTenant`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19796,7 +20046,7 @@ func (ec *executionContext) _Query_listObservabilityTenants(ctx context.Context,
 	}
 	res := resTmp.([]*model.ObservabilityTenant)
 	fc.Result = res
-	return ec.marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantᚄ(ctx, field.Selections, res)
+	return ec.marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_listObservabilityTenants(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19894,7 +20144,7 @@ func (ec *executionContext) _Query_getObservabilityTenant(ctx context.Context, f
 		if data, ok := tmp.(*model.ObservabilityTenant); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.ObservabilityTenant`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.ObservabilityTenant`, tmp)
 	})
 
 	if resTmp == nil {
@@ -19905,7 +20155,7 @@ func (ec *executionContext) _Query_getObservabilityTenant(ctx context.Context, f
 	}
 	res := resTmp.(*model.ObservabilityTenant)
 	fc.Result = res
-	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
+	return ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getObservabilityTenant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20014,7 +20264,7 @@ func (ec *executionContext) _Query_organization(ctx context.Context, field graph
 		if data, ok := tmp.(*model.Organization); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/pluralsh/trace-shield/graph/model.Organization`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/traceshield/trace-shield/graph/model.Organization`, tmp)
 	})
 
 	if resTmp == nil {
@@ -20025,7 +20275,7 @@ func (ec *executionContext) _Query_organization(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.Organization)
 	fc.Result = res
-	return ec.marshalNOrganization2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx, field.Selections, res)
+	return ec.marshalNOrganization2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_organization(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20190,7 +20440,7 @@ func (ec *executionContext) _RelabelConfig_sourceLabels(ctx context.Context, fie
 	}
 	res := resTmp.([]v1alpha1.LabelName)
 	fc.Result = res
-	return ec.marshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx, field.Selections, res)
+	return ec.marshalOLabelName2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_RelabelConfig_sourceLabels(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20418,7 +20668,7 @@ func (ec *executionContext) _RelabelConfig_action(ctx context.Context, field gra
 	}
 	res := resTmp.(*v1alpha1.RelabelAction)
 	fc.Result = res
-	return ec.marshalORelabelAction2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx, field.Selections, res)
+	return ec.marshalORelabelAction2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_RelabelConfig_action(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20611,7 +20861,7 @@ func (ec *executionContext) _RulerAlertManagerConfig_alertRelabelConfigs(ctx con
 	}
 	res := resTmp.([]v1alpha1.RelabelConfig)
 	fc.Result = res
-	return ec.marshalORelabelConfig2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, field.Selections, res)
+	return ec.marshalORelabelConfig2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_RulerAlertManagerConfig_alertRelabelConfigs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20741,7 +20991,7 @@ func (ec *executionContext) _RulerAlertManagerConfig_notifier(ctx context.Contex
 	}
 	res := resTmp.(*v1alpha1.NotifierConfig)
 	fc.Result = res
-	return ec.marshalONotifierConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx, field.Selections, res)
+	return ec.marshalONotifierConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_RulerAlertManagerConfig_notifier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21775,7 +22025,7 @@ func (ec *executionContext) _TempoLimits_metricsGeneratorProcessorSpanMetricsFil
 	}
 	res := resTmp.([]v1alpha1.FilterPolicy)
 	fc.Result = res
-	return ec.marshalOFilterPolicy2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx, field.Selections, res)
+	return ec.marshalOFilterPolicy2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TempoLimits_metricsGeneratorProcessorSpanMetricsFilterPolicies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21819,7 +22069,7 @@ func (ec *executionContext) _TempoLimits_metricsGeneratorProcessorSpanMetricsDim
 	}
 	res := resTmp.([]v1alpha1.DimensionMappings)
 	fc.Result = res
-	return ec.marshalODimensionMappings2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx, field.Selections, res)
+	return ec.marshalODimensionMappings2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TempoLimits_metricsGeneratorProcessorSpanMetricsDimensionMappings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22362,7 +22612,7 @@ func (ec *executionContext) _User_name(ctx context.Context, field graphql.Collec
 	}
 	res := resTmp.(*model.Name)
 	fc.Result = res
-	return ec.marshalOName2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐName(ctx, field.Selections, res)
+	return ec.marshalOName2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐName(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22447,7 +22697,7 @@ func (ec *executionContext) _User_groups(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Group)
 	fc.Result = res
-	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
+	return ec.marshalOGroup2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_groups(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24258,7 +24508,7 @@ func (ec *executionContext) unmarshalInputBlockedQueryInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("types"))
-			data, err := ec.unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx, v)
+			data, err := ec.unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24336,7 +24586,7 @@ func (ec *executionContext) unmarshalInputFilterPolicyInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("include"))
-			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
+			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24345,7 +24595,7 @@ func (ec *executionContext) unmarshalInputFilterPolicyInput(ctx context.Context,
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exclude"))
-			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
+			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24403,7 +24653,7 @@ func (ec *executionContext) unmarshalInputLoginBindingsInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("users"))
-			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
+			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24412,7 +24662,7 @@ func (ec *executionContext) unmarshalInputLoginBindingsInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("groups"))
-			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
+			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24837,7 +25087,7 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerAlertManagerConfig"))
-			data, err := ec.unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx, v)
+			data, err := ec.unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24900,7 +25150,7 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("streamRetention"))
-			data, err := ec.unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx, v)
+			data, err := ec.unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24909,7 +25159,7 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shardStreams"))
-			data, err := ec.unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx, v)
+			data, err := ec.unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24918,7 +25168,7 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blockedQueries"))
-			data, err := ec.unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx, v)
+			data, err := ec.unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24983,7 +25233,7 @@ func (ec *executionContext) unmarshalInputMatchPolicyAttributeInput(ctx context.
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
-			data, err := ec.unmarshalOMap2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx, v)
+			data, err := ec.unmarshalOMap2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25165,7 +25415,7 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricRelabelConfigs"))
-			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
+			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25846,7 +26096,7 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAuth"))
-			data, err := ec.unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx, v)
+			data, err := ec.unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25855,7 +26105,7 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("headerAuth"))
-			data, err := ec.unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx, v)
+			data, err := ec.unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -25864,7 +26114,7 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tls"))
-			data, err := ec.unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx, v)
+			data, err := ec.unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26052,7 +26302,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mimir"))
-			data, err := ec.unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimitsInput(ctx, v)
+			data, err := ec.unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimitsInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26061,7 +26311,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loki"))
-			data, err := ec.unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimitsInput(ctx, v)
+			data, err := ec.unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimitsInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26070,7 +26320,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tempo"))
-			data, err := ec.unmarshalOTempoLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimitsInput(ctx, v)
+			data, err := ec.unmarshalOTempoLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimitsInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26099,7 +26349,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("users"))
-			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
+			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26108,7 +26358,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("groups"))
-			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
+			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26117,7 +26367,7 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("oauth2Clients"))
-			data, err := ec.unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInputᚄ(ctx, v)
+			data, err := ec.unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26146,7 +26396,7 @@ func (ec *executionContext) unmarshalInputPolicyMatchInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("matchType"))
-			data, err := ec.unmarshalOMatchType2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx, v)
+			data, err := ec.unmarshalOMatchType2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26155,7 +26405,7 @@ func (ec *executionContext) unmarshalInputPolicyMatchInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("attributes"))
-			data, err := ec.unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx, v)
+			data, err := ec.unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26184,7 +26434,7 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceLabels"))
-			data, err := ec.unmarshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx, v)
+			data, err := ec.unmarshalOLabelName2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26238,7 +26488,7 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
-			data, err := ec.unmarshalORelabelAction2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx, v)
+			data, err := ec.unmarshalORelabelAction2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26303,7 +26553,7 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertRelabelConfigs"))
-			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
+			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26330,7 +26580,7 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notifier"))
-			data, err := ec.unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx, v)
+			data, err := ec.unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26633,7 +26883,7 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsFilterPolicies"))
-			data, err := ec.unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx, v)
+			data, err := ec.unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -26642,7 +26892,7 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsDimensionMappings"))
-			data, err := ec.unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx, v)
+			data, err := ec.unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -27550,9 +27800,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "group":
+		case "createGroup":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_group(ctx, field)
+				return ec._Mutation_createGroup(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateGroup":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateGroup(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -29223,6 +29480,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getGroup":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getGroup(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "listOAuth2Clients":
 			field := field
 
@@ -30089,22 +30368,22 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNBlockedQuery2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx context.Context, sel ast.SelectionSet, v v1alpha1.BlockedQuery) graphql.Marshaler {
+func (ec *executionContext) marshalNBlockedQuery2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx context.Context, sel ast.SelectionSet, v v1alpha1.BlockedQuery) graphql.Marshaler {
 	return ec._BlockedQuery(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNBlockedQueryInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx context.Context, v interface{}) (v1alpha1.BlockedQuery, error) {
+func (ec *executionContext) unmarshalNBlockedQueryInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx context.Context, v interface{}) (v1alpha1.BlockedQuery, error) {
 	res, err := ec.unmarshalInputBlockedQueryInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNBlockedQueryType2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx context.Context, v interface{}) (v1alpha1.BlockedQueryType, error) {
+func (ec *executionContext) unmarshalNBlockedQueryType2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx context.Context, v interface{}) (v1alpha1.BlockedQueryType, error) {
 	var res v1alpha1.BlockedQueryType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNBlockedQueryType2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx context.Context, sel ast.SelectionSet, v v1alpha1.BlockedQueryType) graphql.Marshaler {
+func (ec *executionContext) marshalNBlockedQueryType2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx context.Context, sel ast.SelectionSet, v v1alpha1.BlockedQueryType) graphql.Marshaler {
 	return v
 }
 
@@ -30123,29 +30402,29 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNDimensionMappings2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx context.Context, sel ast.SelectionSet, v v1alpha1.DimensionMappings) graphql.Marshaler {
+func (ec *executionContext) marshalNDimensionMappings2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx context.Context, sel ast.SelectionSet, v v1alpha1.DimensionMappings) graphql.Marshaler {
 	return ec._DimensionMappings(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNDimensionMappingsInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx context.Context, v interface{}) (v1alpha1.DimensionMappings, error) {
+func (ec *executionContext) unmarshalNDimensionMappingsInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx context.Context, v interface{}) (v1alpha1.DimensionMappings, error) {
 	res, err := ec.unmarshalInputDimensionMappingsInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNFilterPolicy2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx context.Context, sel ast.SelectionSet, v v1alpha1.FilterPolicy) graphql.Marshaler {
+func (ec *executionContext) marshalNFilterPolicy2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx context.Context, sel ast.SelectionSet, v v1alpha1.FilterPolicy) graphql.Marshaler {
 	return ec._FilterPolicy(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNFilterPolicyInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx context.Context, v interface{}) (v1alpha1.FilterPolicy, error) {
+func (ec *executionContext) unmarshalNFilterPolicyInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx context.Context, v interface{}) (v1alpha1.FilterPolicy, error) {
 	res, err := ec.unmarshalInputFilterPolicyInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNGroup2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v model.Group) graphql.Marshaler {
+func (ec *executionContext) marshalNGroup2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v model.Group) graphql.Marshaler {
 	return ec._Group(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v *model.Group) graphql.Marshaler {
+func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx context.Context, sel ast.SelectionSet, v *model.Group) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30155,7 +30434,7 @@ func (ec *executionContext) marshalNGroup2ᚖgithubᚗcomᚋpluralshᚋtraceᚑs
 	return ec._Group(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNGroupInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInput(ctx context.Context, v interface{}) (*model.GroupInput, error) {
+func (ec *executionContext) unmarshalNGroupInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInput(ctx context.Context, v interface{}) (*model.GroupInput, error) {
 	res, err := ec.unmarshalInputGroupInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -30175,30 +30454,30 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNLabelName2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx context.Context, v interface{}) (v1alpha1.LabelName, error) {
+func (ec *executionContext) unmarshalNLabelName2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx context.Context, v interface{}) (v1alpha1.LabelName, error) {
 	var res v1alpha1.LabelName
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNLabelName2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx context.Context, sel ast.SelectionSet, v v1alpha1.LabelName) graphql.Marshaler {
+func (ec *executionContext) marshalNLabelName2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx context.Context, sel ast.SelectionSet, v v1alpha1.LabelName) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNMatchPolicyAttribute2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx context.Context, sel ast.SelectionSet, v v1alpha1.MatchPolicyAttribute) graphql.Marshaler {
+func (ec *executionContext) marshalNMatchPolicyAttribute2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx context.Context, sel ast.SelectionSet, v v1alpha1.MatchPolicyAttribute) graphql.Marshaler {
 	return ec._MatchPolicyAttribute(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNMatchPolicyAttributeInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx context.Context, v interface{}) (v1alpha1.MatchPolicyAttribute, error) {
+func (ec *executionContext) unmarshalNMatchPolicyAttributeInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx context.Context, v interface{}) (v1alpha1.MatchPolicyAttribute, error) {
 	res, err := ec.unmarshalInputMatchPolicyAttributeInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOAuth2Client2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v model.OAuth2Client) graphql.Marshaler {
+func (ec *executionContext) marshalNOAuth2Client2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v model.OAuth2Client) graphql.Marshaler {
 	return ec._OAuth2Client(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.OAuth2Client) graphql.Marshaler {
+func (ec *executionContext) marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.OAuth2Client) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -30222,7 +30501,7 @@ func (ec *executionContext) marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋpluralsh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, sel, v[i])
+			ret[i] = ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30242,7 +30521,7 @@ func (ec *executionContext) marshalNOAuth2Client2ᚕᚖgithubᚗcomᚋpluralsh�
 	return ret
 }
 
-func (ec *executionContext) marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2Client) graphql.Marshaler {
+func (ec *executionContext) marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2Client) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30252,16 +30531,16 @@ func (ec *executionContext) marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtr
 	return ec._OAuth2Client(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNOAuth2ClientInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInput(ctx context.Context, v interface{}) (*model.OAuth2ClientInput, error) {
+func (ec *executionContext) unmarshalNOAuth2ClientInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInput(ctx context.Context, v interface{}) (*model.OAuth2ClientInput, error) {
 	res, err := ec.unmarshalInputOAuth2ClientInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNOAuth2RedirectTo2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx context.Context, sel ast.SelectionSet, v model.OAuth2RedirectTo) graphql.Marshaler {
+func (ec *executionContext) marshalNOAuth2RedirectTo2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx context.Context, sel ast.SelectionSet, v model.OAuth2RedirectTo) graphql.Marshaler {
 	return ec._OAuth2RedirectTo(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2RedirectTo) graphql.Marshaler {
+func (ec *executionContext) marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2RedirectTo(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2RedirectTo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30271,11 +30550,11 @@ func (ec *executionContext) marshalNOAuth2RedirectTo2ᚖgithubᚗcomᚋpluralsh�
 	return ec._OAuth2RedirectTo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNObservabilityTenant2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx context.Context, sel ast.SelectionSet, v model.ObservabilityTenant) graphql.Marshaler {
+func (ec *executionContext) marshalNObservabilityTenant2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx context.Context, sel ast.SelectionSet, v model.ObservabilityTenant) graphql.Marshaler {
 	return ec._ObservabilityTenant(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ObservabilityTenant) graphql.Marshaler {
+func (ec *executionContext) marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ObservabilityTenant) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -30299,7 +30578,7 @@ func (ec *executionContext) marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋplu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, sel, v[i])
+			ret[i] = ec.marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30319,7 +30598,7 @@ func (ec *executionContext) marshalNObservabilityTenant2ᚕᚖgithubᚗcomᚋplu
 	return ret
 }
 
-func (ec *executionContext) marshalNObservabilityTenant2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenant) graphql.Marshaler {
+func (ec *executionContext) marshalNObservabilityTenant2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenant(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenant) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30329,11 +30608,11 @@ func (ec *executionContext) marshalNObservabilityTenant2ᚖgithubᚗcomᚋplural
 	return ec._ObservabilityTenant(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNOrganization2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx context.Context, sel ast.SelectionSet, v model.Organization) graphql.Marshaler {
+func (ec *executionContext) marshalNOrganization2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx context.Context, sel ast.SelectionSet, v model.Organization) graphql.Marshaler {
 	return ec._Organization(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNOrganization2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx context.Context, sel ast.SelectionSet, v *model.Organization) graphql.Marshaler {
+func (ec *executionContext) marshalNOrganization2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOrganization(ctx context.Context, sel ast.SelectionSet, v *model.Organization) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30343,20 +30622,20 @@ func (ec *executionContext) marshalNOrganization2ᚖgithubᚗcomᚋpluralshᚋtr
 	return ec._Organization(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNRelabelConfig2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx context.Context, sel ast.SelectionSet, v v1alpha1.RelabelConfig) graphql.Marshaler {
+func (ec *executionContext) marshalNRelabelConfig2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx context.Context, sel ast.SelectionSet, v v1alpha1.RelabelConfig) graphql.Marshaler {
 	return ec._RelabelConfig(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNRelabelConfigInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx context.Context, v interface{}) (v1alpha1.RelabelConfig, error) {
+func (ec *executionContext) unmarshalNRelabelConfigInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx context.Context, v interface{}) (v1alpha1.RelabelConfig, error) {
 	res, err := ec.unmarshalInputRelabelConfigInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNStreamRetention2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx context.Context, sel ast.SelectionSet, v v1alpha1.StreamRetention) graphql.Marshaler {
+func (ec *executionContext) marshalNStreamRetention2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx context.Context, sel ast.SelectionSet, v v1alpha1.StreamRetention) graphql.Marshaler {
 	return ec._StreamRetention(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNStreamRetentionInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx context.Context, v interface{}) (v1alpha1.StreamRetention, error) {
+func (ec *executionContext) unmarshalNStreamRetentionInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx context.Context, v interface{}) (v1alpha1.StreamRetention, error) {
 	res, err := ec.unmarshalInputStreamRetentionInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -30376,11 +30655,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -30404,7 +30683,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30424,7 +30703,7 @@ func (ec *executionContext) marshalNUser2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 	return ret
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -30434,7 +30713,7 @@ func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑsh
 	return ec._User(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUserInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (*model.UserInput, error) {
+func (ec *executionContext) unmarshalNUserInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInput(ctx context.Context, v interface{}) (*model.UserInput, error) {
 	res, err := ec.unmarshalInputUserInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -30692,7 +30971,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOBlockedQuery2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.BlockedQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOBlockedQuery2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.BlockedQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -30719,7 +30998,7 @@ func (ec *executionContext) marshalOBlockedQuery2ᚕgithubᚗcomᚋpluralshᚋtr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNBlockedQuery2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx, sel, v[i])
+			ret[i] = ec.marshalNBlockedQuery2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30739,7 +31018,7 @@ func (ec *executionContext) marshalOBlockedQuery2ᚕgithubᚗcomᚋpluralshᚋtr
 	return ret
 }
 
-func (ec *executionContext) unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx context.Context, v interface{}) ([]v1alpha1.BlockedQuery, error) {
+func (ec *executionContext) unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx context.Context, v interface{}) ([]v1alpha1.BlockedQuery, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -30751,7 +31030,7 @@ func (ec *executionContext) unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋplural
 	res := make([]v1alpha1.BlockedQuery, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNBlockedQueryInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNBlockedQueryInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQuery(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -30759,7 +31038,7 @@ func (ec *executionContext) unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋplural
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx context.Context, v interface{}) ([]v1alpha1.BlockedQueryType, error) {
+func (ec *executionContext) unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx context.Context, v interface{}) ([]v1alpha1.BlockedQueryType, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -30771,7 +31050,7 @@ func (ec *executionContext) unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋplurals
 	res := make([]v1alpha1.BlockedQueryType, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNBlockedQueryType2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNBlockedQueryType2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -30779,7 +31058,7 @@ func (ec *executionContext) unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋplurals
 	return res, nil
 }
 
-func (ec *executionContext) marshalOBlockedQueryType2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.BlockedQueryType) graphql.Marshaler {
+func (ec *executionContext) marshalOBlockedQueryType2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.BlockedQueryType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -30806,7 +31085,7 @@ func (ec *executionContext) marshalOBlockedQueryType2ᚕgithubᚗcomᚋpluralsh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNBlockedQueryType2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx, sel, v[i])
+			ret[i] = ec.marshalNBlockedQueryType2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryType(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30868,7 +31147,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalODimensionMappings2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.DimensionMappings) graphql.Marshaler {
+func (ec *executionContext) marshalODimensionMappings2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.DimensionMappings) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -30895,7 +31174,7 @@ func (ec *executionContext) marshalODimensionMappings2ᚕgithubᚗcomᚋpluralsh
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDimensionMappings2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx, sel, v[i])
+			ret[i] = ec.marshalNDimensionMappings2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30915,7 +31194,7 @@ func (ec *executionContext) marshalODimensionMappings2ᚕgithubᚗcomᚋpluralsh
 	return ret
 }
 
-func (ec *executionContext) unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx context.Context, v interface{}) ([]v1alpha1.DimensionMappings, error) {
+func (ec *executionContext) unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx context.Context, v interface{}) ([]v1alpha1.DimensionMappings, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -30927,7 +31206,7 @@ func (ec *executionContext) unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋp
 	res := make([]v1alpha1.DimensionMappings, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNDimensionMappingsInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNDimensionMappingsInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappings(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -30951,7 +31230,7 @@ func (ec *executionContext) marshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋ
 	return res
 }
 
-func (ec *executionContext) marshalOFilterPolicy2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.FilterPolicy) graphql.Marshaler {
+func (ec *executionContext) marshalOFilterPolicy2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.FilterPolicy) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -30978,7 +31257,7 @@ func (ec *executionContext) marshalOFilterPolicy2ᚕgithubᚗcomᚋpluralshᚋtr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNFilterPolicy2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx, sel, v[i])
+			ret[i] = ec.marshalNFilterPolicy2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -30998,7 +31277,7 @@ func (ec *executionContext) marshalOFilterPolicy2ᚕgithubᚗcomᚋpluralshᚋtr
 	return ret
 }
 
-func (ec *executionContext) unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx context.Context, v interface{}) ([]v1alpha1.FilterPolicy, error) {
+func (ec *executionContext) unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx context.Context, v interface{}) ([]v1alpha1.FilterPolicy, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31010,7 +31289,7 @@ func (ec *executionContext) unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋplural
 	res := make([]v1alpha1.FilterPolicy, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFilterPolicyInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNFilterPolicyInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicy(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31092,7 +31371,7 @@ func (ec *executionContext) marshalOFloatMap2map(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Group) graphql.Marshaler {
+func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Group) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31119,7 +31398,7 @@ func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
+			ret[i] = ec.marshalNGroup2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroup(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31139,7 +31418,7 @@ func (ec *executionContext) marshalOGroup2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx context.Context, v interface{}) ([]*model.GroupInput, error) {
+func (ec *executionContext) unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx context.Context, v interface{}) ([]*model.GroupInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31151,7 +31430,7 @@ func (ec *executionContext) unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋpluralsh�
 	res := make([]*model.GroupInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNGroupInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNGroupInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31207,7 +31486,7 @@ func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx context.Context, v interface{}) ([]v1alpha1.LabelName, error) {
+func (ec *executionContext) unmarshalOLabelName2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx context.Context, v interface{}) ([]v1alpha1.LabelName, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31219,7 +31498,7 @@ func (ec *executionContext) unmarshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtra
 	res := make([]v1alpha1.LabelName, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNLabelName2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNLabelName2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31227,13 +31506,13 @@ func (ec *executionContext) unmarshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtra
 	return res, nil
 }
 
-func (ec *executionContext) marshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.LabelName) graphql.Marshaler {
+func (ec *executionContext) marshalOLabelName2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.LabelName) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNLabelName2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx, sel, v[i])
+		ret[i] = ec.marshalNLabelName2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelName(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -31245,14 +31524,14 @@ func (ec *executionContext) marshalOLabelName2ᚕgithubᚗcomᚋpluralshᚋtrace
 	return ret
 }
 
-func (ec *executionContext) marshalOLoginBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindings(ctx context.Context, sel ast.SelectionSet, v *model.LoginBindings) graphql.Marshaler {
+func (ec *executionContext) marshalOLoginBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindings(ctx context.Context, sel ast.SelectionSet, v *model.LoginBindings) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._LoginBindings(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx context.Context, v interface{}) (*model.LoginBindingsInput, error) {
+func (ec *executionContext) unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐLoginBindingsInput(ctx context.Context, v interface{}) (*model.LoginBindingsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31260,14 +31539,14 @@ func (ec *executionContext) unmarshalOLoginBindingsInput2ᚖgithubᚗcomᚋplura
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOLokiLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.LokiLimits) graphql.Marshaler {
+func (ec *executionContext) marshalOLokiLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.LokiLimits) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._LokiLimits(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.LokiLimitsInput, error) {
+func (ec *executionContext) unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.LokiLimitsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31275,13 +31554,13 @@ func (ec *executionContext) unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋpluralsh
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOMap2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx context.Context, v interface{}) (v1alpha1.WrappedMap, error) {
+func (ec *executionContext) unmarshalOMap2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx context.Context, v interface{}) (v1alpha1.WrappedMap, error) {
 	var res v1alpha1.WrappedMap
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMap2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx context.Context, sel ast.SelectionSet, v v1alpha1.WrappedMap) graphql.Marshaler {
+func (ec *executionContext) marshalOMap2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx context.Context, sel ast.SelectionSet, v v1alpha1.WrappedMap) graphql.Marshaler {
 	return v
 }
 
@@ -31301,7 +31580,7 @@ func (ec *executionContext) marshalOMap2map(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.MatchPolicyAttribute) graphql.Marshaler {
+func (ec *executionContext) marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.MatchPolicyAttribute) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31328,7 +31607,7 @@ func (ec *executionContext) marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋplura
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMatchPolicyAttribute2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx, sel, v[i])
+			ret[i] = ec.marshalNMatchPolicyAttribute2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31348,7 +31627,7 @@ func (ec *executionContext) marshalOMatchPolicyAttribute2ᚕgithubᚗcomᚋplura
 	return ret
 }
 
-func (ec *executionContext) unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx context.Context, v interface{}) ([]v1alpha1.MatchPolicyAttribute, error) {
+func (ec *executionContext) unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx context.Context, v interface{}) ([]v1alpha1.MatchPolicyAttribute, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31360,7 +31639,7 @@ func (ec *executionContext) unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcom�
 	res := make([]v1alpha1.MatchPolicyAttribute, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNMatchPolicyAttributeInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNMatchPolicyAttributeInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttribute(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31368,7 +31647,7 @@ func (ec *executionContext) unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMatchType2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx context.Context, v interface{}) (*v1alpha1.MatchType, error) {
+func (ec *executionContext) unmarshalOMatchType2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx context.Context, v interface{}) (*v1alpha1.MatchType, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31377,21 +31656,21 @@ func (ec *executionContext) unmarshalOMatchType2ᚖgithubᚗcomᚋpluralshᚋtra
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMatchType2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MatchType) graphql.Marshaler {
+func (ec *executionContext) marshalOMatchType2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MatchType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOMimirLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MimirLimits) graphql.Marshaler {
+func (ec *executionContext) marshalOMimirLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MimirLimits) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MimirLimits(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.MimirLimitsInput, error) {
+func (ec *executionContext) unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.MimirLimitsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31399,14 +31678,14 @@ func (ec *executionContext) unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋplurals
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOName2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐName(ctx context.Context, sel ast.SelectionSet, v *model.Name) graphql.Marshaler {
+func (ec *executionContext) marshalOName2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐName(ctx context.Context, sel ast.SelectionSet, v *model.Name) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Name(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONameInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐNameInput(ctx context.Context, v interface{}) (*model.NameInput, error) {
+func (ec *executionContext) unmarshalONameInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐNameInput(ctx context.Context, v interface{}) (*model.NameInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31414,14 +31693,14 @@ func (ec *executionContext) unmarshalONameInput2ᚖgithubᚗcomᚋpluralshᚋtra
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalONotifierBasicAuth2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierBasicAuth) graphql.Marshaler {
+func (ec *executionContext) marshalONotifierBasicAuth2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierBasicAuth) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NotifierBasicAuth(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx context.Context, v interface{}) (*v1alpha1.NotifierBasicAuth, error) {
+func (ec *executionContext) unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx context.Context, v interface{}) (*v1alpha1.NotifierBasicAuth, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31429,14 +31708,14 @@ func (ec *executionContext) unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋp
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalONotifierConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierConfig) graphql.Marshaler {
+func (ec *executionContext) marshalONotifierConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NotifierConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx context.Context, v interface{}) (*v1alpha1.NotifierConfig, error) {
+func (ec *executionContext) unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx context.Context, v interface{}) (*v1alpha1.NotifierConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31444,14 +31723,14 @@ func (ec *executionContext) unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋplur
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalONotifierHeaderAuth2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierHeaderAuth) graphql.Marshaler {
+func (ec *executionContext) marshalONotifierHeaderAuth2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierHeaderAuth) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NotifierHeaderAuth(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx context.Context, v interface{}) (*v1alpha1.NotifierHeaderAuth, error) {
+func (ec *executionContext) unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx context.Context, v interface{}) (*v1alpha1.NotifierHeaderAuth, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31459,14 +31738,14 @@ func (ec *executionContext) unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalONotifierTLSClientConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierTLSClientConfig) graphql.Marshaler {
+func (ec *executionContext) marshalONotifierTLSClientConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NotifierTLSClientConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NotifierTLSClientConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx context.Context, v interface{}) (*v1alpha1.NotifierTLSClientConfig, error) {
+func (ec *executionContext) unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx context.Context, v interface{}) (*v1alpha1.NotifierTLSClientConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31474,7 +31753,7 @@ func (ec *executionContext) unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗc
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.OAuth2Client) graphql.Marshaler {
+func (ec *executionContext) marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Clientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.OAuth2Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31501,7 +31780,7 @@ func (ec *executionContext) marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋpluralsh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, sel, v[i])
+			ret[i] = ec.marshalNOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31521,14 +31800,14 @@ func (ec *executionContext) marshalOOAuth2Client2ᚕᚖgithubᚗcomᚋpluralsh�
 	return ret
 }
 
-func (ec *executionContext) marshalOOAuth2Client2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2Client) graphql.Marshaler {
+func (ec *executionContext) marshalOOAuth2Client2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2Client(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2Client) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OAuth2Client(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInputᚄ(ctx context.Context, v interface{}) ([]*model.OAuth2ClientInput, error) {
+func (ec *executionContext) unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInputᚄ(ctx context.Context, v interface{}) ([]*model.OAuth2ClientInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31540,7 +31819,7 @@ func (ec *executionContext) unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋplu
 	res := make([]*model.OAuth2ClientInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNOAuth2ClientInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNOAuth2ClientInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31548,28 +31827,28 @@ func (ec *executionContext) unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋplu
 	return res, nil
 }
 
-func (ec *executionContext) marshalOOAuth2ConsentRequest2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ConsentRequest(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2ConsentRequest) graphql.Marshaler {
+func (ec *executionContext) marshalOOAuth2ConsentRequest2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ConsentRequest(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2ConsentRequest) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OAuth2ConsentRequest(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOOAuth2LoginRequest2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2LoginRequest(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2LoginRequest) graphql.Marshaler {
+func (ec *executionContext) marshalOOAuth2LoginRequest2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2LoginRequest(ctx context.Context, sel ast.SelectionSet, v *model.OAuth2LoginRequest) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OAuth2LoginRequest(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOObservabilityTenantLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimits(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenantLimits) graphql.Marshaler {
+func (ec *executionContext) marshalOObservabilityTenantLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimits(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenantLimits) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ObservabilityTenantLimits(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx context.Context, v interface{}) (*model.ObservabilityTenantLimitsInput, error) {
+func (ec *executionContext) unmarshalOObservabilityTenantLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantLimitsInput(ctx context.Context, v interface{}) (*model.ObservabilityTenantLimitsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31577,14 +31856,14 @@ func (ec *executionContext) unmarshalOObservabilityTenantLimitsInput2ᚖgithub�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenantPermissionBindings) graphql.Marshaler {
+func (ec *executionContext) marshalOObservabilityTenantPermissionBindings2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindings(ctx context.Context, sel ast.SelectionSet, v *model.ObservabilityTenantPermissionBindings) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ObservabilityTenantPermissionBindings(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx context.Context, v interface{}) (*model.ObservabilityTenantPermissionBindingsInput, error) {
+func (ec *executionContext) unmarshalOObservabilityTenantPermissionBindingsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐObservabilityTenantPermissionBindingsInput(ctx context.Context, v interface{}) (*model.ObservabilityTenantPermissionBindingsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31592,21 +31871,21 @@ func (ec *executionContext) unmarshalOObservabilityTenantPermissionBindingsInput
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOOidcContext2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx context.Context, sel ast.SelectionSet, v *model.OidcContext) graphql.Marshaler {
+func (ec *executionContext) marshalOOidcContext2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOidcContext(ctx context.Context, sel ast.SelectionSet, v *model.OidcContext) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OidcContext(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPolicyMatch2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PolicyMatch) graphql.Marshaler {
+func (ec *executionContext) marshalOPolicyMatch2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PolicyMatch) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PolicyMatch(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx context.Context, v interface{}) (*v1alpha1.PolicyMatch, error) {
+func (ec *executionContext) unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx context.Context, v interface{}) (*v1alpha1.PolicyMatch, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31614,7 +31893,7 @@ func (ec *executionContext) unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋplurals
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalORelabelAction2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx context.Context, v interface{}) (*v1alpha1.RelabelAction, error) {
+func (ec *executionContext) unmarshalORelabelAction2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx context.Context, v interface{}) (*v1alpha1.RelabelAction, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31623,14 +31902,14 @@ func (ec *executionContext) unmarshalORelabelAction2ᚖgithubᚗcomᚋpluralsh�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalORelabelAction2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.RelabelAction) graphql.Marshaler {
+func (ec *executionContext) marshalORelabelAction2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.RelabelAction) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalORelabelConfig2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.RelabelConfig) graphql.Marshaler {
+func (ec *executionContext) marshalORelabelConfig2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.RelabelConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31657,7 +31936,7 @@ func (ec *executionContext) marshalORelabelConfig2ᚕgithubᚗcomᚋpluralshᚋt
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNRelabelConfig2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalNRelabelConfig2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31677,7 +31956,7 @@ func (ec *executionContext) marshalORelabelConfig2ᚕgithubᚗcomᚋpluralshᚋt
 	return ret
 }
 
-func (ec *executionContext) unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx context.Context, v interface{}) ([]v1alpha1.RelabelConfig, error) {
+func (ec *executionContext) unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx context.Context, v interface{}) ([]v1alpha1.RelabelConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31689,7 +31968,7 @@ func (ec *executionContext) unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋplura
 	res := make([]v1alpha1.RelabelConfig, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNRelabelConfigInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNRelabelConfigInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfig(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31697,14 +31976,14 @@ func (ec *executionContext) unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋplura
 	return res, nil
 }
 
-func (ec *executionContext) marshalORulerAlertManagerConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.RulerAlertManagerConfig) graphql.Marshaler {
+func (ec *executionContext) marshalORulerAlertManagerConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.RulerAlertManagerConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._RulerAlertManagerConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx context.Context, v interface{}) (*v1alpha1.RulerAlertManagerConfig, error) {
+func (ec *executionContext) unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx context.Context, v interface{}) (*v1alpha1.RulerAlertManagerConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31712,14 +31991,14 @@ func (ec *executionContext) unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗc
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOShardstreamsConfig2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.ShardstreamsConfig) graphql.Marshaler {
+func (ec *executionContext) marshalOShardstreamsConfig2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.ShardstreamsConfig) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ShardstreamsConfig(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx context.Context, v interface{}) (*v1alpha1.ShardstreamsConfig, error) {
+func (ec *executionContext) unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx context.Context, v interface{}) (*v1alpha1.ShardstreamsConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31727,7 +32006,7 @@ func (ec *executionContext) unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOStreamRetention2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.StreamRetention) graphql.Marshaler {
+func (ec *executionContext) marshalOStreamRetention2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.StreamRetention) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31754,7 +32033,7 @@ func (ec *executionContext) marshalOStreamRetention2ᚕgithubᚗcomᚋpluralsh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNStreamRetention2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx, sel, v[i])
+			ret[i] = ec.marshalNStreamRetention2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31774,7 +32053,7 @@ func (ec *executionContext) marshalOStreamRetention2ᚕgithubᚗcomᚋpluralsh�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx context.Context, v interface{}) ([]v1alpha1.StreamRetention, error) {
+func (ec *executionContext) unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx context.Context, v interface{}) ([]v1alpha1.StreamRetention, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31786,7 +32065,7 @@ func (ec *executionContext) unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋplu
 	res := make([]v1alpha1.StreamRetention, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNStreamRetentionInput2githubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNStreamRetentionInput2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetention(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -31864,14 +32143,14 @@ func (ec *executionContext) marshalOStringMap2map(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalOTempoLimits2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.TempoLimits) graphql.Marshaler {
+func (ec *executionContext) marshalOTempoLimits2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimits(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.TempoLimits) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TempoLimits(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTempoLimitsInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.TempoLimitsInput, error) {
+func (ec *executionContext) unmarshalOTempoLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimitsInput(ctx context.Context, v interface{}) (*v1alpha1.TempoLimitsInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31927,7 +32206,7 @@ func (ec *executionContext) marshalOUInt2ᚖuint64(ctx context.Context, sel ast.
 	return res
 }
 
-func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -31954,7 +32233,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+			ret[i] = ec.marshalNUser2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -31974,7 +32253,7 @@ func (ec *executionContext) marshalOUser2ᚕᚖgithubᚗcomᚋpluralshᚋtrace�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx context.Context, v interface{}) ([]*model.UserInput, error) {
+func (ec *executionContext) unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx context.Context, v interface{}) ([]*model.UserInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -31986,7 +32265,7 @@ func (ec *executionContext) unmarshalOUserInput2ᚕᚖgithubᚗcomᚋpluralshᚋ
 	res := make([]*model.UserInput, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNUserInput2ᚖgithubᚗcomᚋpluralshᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInput(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNUserInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInput(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
