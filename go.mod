@@ -13,7 +13,7 @@ require (
 	github.com/rs/cors v1.9.0
 	github.com/traceshield/trace-shield-controller v0.3.26
 	github.com/vektah/gqlparser/v2 v2.5.6
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.42.0
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0
 	go.opentelemetry.io/contrib/propagators/jaeger v1.17.0
 	go.opentelemetry.io/otel v1.16.0
 	go.opentelemetry.io/otel/sdk v1.16.0
