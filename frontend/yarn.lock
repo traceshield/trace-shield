@@ -1553,6 +1553,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.12.1":
+  version: 7.23.6
+  resolution: "@babel/runtime@npm:7.23.6"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 1a8eaf3d3a103ef5227b60ca7ab5c589118c36ca65ef2d64e65380b32a98a3f3b5b3ef96660fa0471b079a18b619a8317f3e7f03ab2b930c45282a8b69ed9a16
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.0, @babel/runtime@npm:^7.20.1, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/runtime@npm:7.22.5"
@@ -3999,7 +4008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^7.26.0":
+"@testing-library/dom@npm:^7.26.6":
   version: 7.31.2
   resolution: "@testing-library/dom@npm:7.31.2"
   dependencies:
@@ -4031,16 +4040,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:11.1.0":
-  version: 11.1.0
-  resolution: "@testing-library/react@npm:11.1.0"
+"@testing-library/react@npm:11.1.2":
+  version: 11.1.2
+  resolution: "@testing-library/react@npm:11.1.2"
   dependencies:
-    "@babel/runtime": ^7.11.2
-    "@testing-library/dom": ^7.26.0
+    "@babel/runtime": ^7.12.1
+    "@testing-library/dom": ^7.26.6
   peerDependencies:
     react: "*"
     react-dom: "*"
-  checksum: d587e8d1e91733d3731ef48caa63d122bcb05a80729cbf2e1a5506300ad7aec589aeb4d7683a732bf7f14762d602d4bf4c31c6ee9f1f2160175e549bcaa1f028
+  checksum: 61df2bfc12e81b2d69696b8e2585c028c7213bb019e6bfa285ddbb2a99ee3c565feb714c06a344de11ee20ab1846a7654d4ec2bd710b009346ecaff71d51b36e
   languageName: node
   linkType: hard
 
@@ -14247,6 +14256,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "regenerator-runtime@npm:0.14.0"
+  checksum: 1c977ad82a82a4412e4f639d65d22be376d3ebdd30da2c003eeafdaaacd03fc00c2320f18120007ee700900979284fc78a9f00da7fb593f6e6eeebc673fba9a3
+  languageName: node
+  linkType: hard
+
 "regenerator-transform@npm:^0.15.0":
   version: 0.15.0
   resolution: "regenerator-transform@npm:0.15.0"
@@ -15871,7 +15887,7 @@ __metadata:
     "@ory/client": 1.1.39
     "@ory/elements": 0.0.1-beta.6
     "@testing-library/jest-dom": 5.11.4
-    "@testing-library/react": 11.1.0
+    "@testing-library/react": 11.1.2
     "@testing-library/user-event": 12.1.10
     "@types/graphql": 14.5.0
     "@types/jest": 26.0.15
