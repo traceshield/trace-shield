@@ -4330,13 +4330,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:26.0.15":
-  version: 26.0.15
-  resolution: "@types/jest@npm:26.0.15"
+"@types/jest@npm:26.0.24":
+  version: 26.0.24
+  resolution: "@types/jest@npm:26.0.24"
   dependencies:
     jest-diff: ^26.0.0
     pretty-format: ^26.0.0
-  checksum: 5bbed3d3afa40bcac9eb2e8e76957b40b7cb86228a7a1dd455f7e30cb283a7314f7d7afaf2d46ca52ba5ce62168e0f60c57e0ab7509a6b91eab42460709b6bf1
+  checksum: ae39675412f08d884926254e9b12bfd2b5a4e4d204c94d3148cb942174a474930d0c60540133c968f22241d4712b7940c96cbc883096eb326a4d5b206fb78bd0
   languageName: node
   linkType: hard
 
@@ -15874,7 +15874,7 @@ __metadata:
     "@testing-library/react": 11.1.0
     "@testing-library/user-event": 12.1.10
     "@types/graphql": 14.5.0
-    "@types/jest": 26.0.15
+    "@types/jest": 26.0.24
     "@types/node": 18.15.5
     "@types/react": 18.0.27
     "@types/react-dom": 18.0.11
