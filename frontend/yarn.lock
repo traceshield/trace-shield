@@ -4015,9 +4015,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/jest-dom@npm:5.11.4":
-  version: 5.11.4
-  resolution: "@testing-library/jest-dom@npm:5.11.4"
+"@testing-library/jest-dom@npm:5.11.10":
+  version: 5.11.10
+  resolution: "@testing-library/jest-dom@npm:5.11.10"
   dependencies:
     "@babel/runtime": ^7.9.2
     "@types/testing-library__jest-dom": ^5.9.1
@@ -4027,7 +4027,7 @@ __metadata:
     css.escape: ^1.5.1
     lodash: ^4.17.15
     redent: ^3.0.0
-  checksum: 15ab63d61ed2faebe85116c46b445d63ee02486517c203d250a2302a0051d8d10cbf050d5780255419ef7101faf8534613ce785e970b7faab5ea259f184e0517
+  checksum: 958f3dd3983984eee5a9ab9512cf3d6a351421dec60b058c8930faf57007cbf2b251f4dddaab351d86f3e40dd3157a440ffe6176867f269fe0aee228fa518964
   languageName: node
   linkType: hard
 
@@ -15870,7 +15870,7 @@ __metadata:
     "@mui/x-data-grid-generator": 5.0.1
     "@ory/client": 1.1.39
     "@ory/elements": 0.0.1-beta.6
-    "@testing-library/jest-dom": 5.11.4
+    "@testing-library/jest-dom": 5.11.10
     "@testing-library/react": 11.1.0
     "@testing-library/user-event": 12.1.10
     "@types/graphql": 14.5.0
