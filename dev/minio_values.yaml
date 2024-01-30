@@ -1,0 +1,4 @@
+auth:
+  rootUser: admin
+  rootPassword: password
+defaultBuckets: mimir-tsdb, mimir-ruler, enterprise-metrics-tsdb, enterprise-metrics-admin, enterprise-metrics-ruler

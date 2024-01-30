@@ -3,7 +3,7 @@
     url: http://frontend.default.svc.cluster.local
     preserve_host: true
   match:
-    url: <http|https>://localhost.pluraldev.sh:4455</|/registration.*|/welcome.*|/recovery.*|/verification.*|/login.*|/consent.*|/error|/404|/500|/.*.css|./*.js|/.*.png|/.*.svg|/assets/.*|/static/.*|/users|/groups|/settings.*|/.*.json>
+    url: <http|https>://localhost.traceshield.io:4455</|/registration.*|/welcome.*|/recovery.*|/verification.*|/login.*|/consent.*|/error|/404|/500|/.*.css|./*.js|/.*.png|/.*.svg|/assets/.*|/static/.*|/users|/groups|/settings.*|/.*.json>
     methods:
       - GET
       - POST
@@ -20,10 +20,9 @@
 - id: api-server:graphiql:public
   upstream:
     url: http://api-server.default.svc.cluster.local:8082
-    strip_path: /graphiql
     preserve_host: true
   match:
-    url: <http|https>://localhost.pluraldev.sh:4455/graphiql
+    url: <http|https>://localhost.traceshield.io:4455/graphiql
     methods:
       - GET
       - POST
@@ -42,7 +41,7 @@
     url: http://api-server.default.svc.cluster.local:8082
     preserve_host: true
   match:
-    url: <http|https>://localhost.pluraldev.sh:4455/graphql
+    url: <http|https>://localhost.traceshield.io:4455/graphql
     methods:
       - GET
       - POST
@@ -56,12 +55,26 @@
     handler: allow
   mutators:
     - handler: noop
+- id: api-server:user-webhok:public
+  upstream:
+    url: http://api-server.default.svc.cluster.local:8082
+    preserve_host: true
+  match:
+    url: <http|https>://localhost.traceshield.io:4455/user-webhook
+    methods:
+      - POST
+  authenticators:
+    - handler: noop
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: noop
 - id: api-server:consent:public
   upstream:
     url: http://api-server.default.svc.cluster.local:8082
     preserve_host: true
   match:
-    url: <http|https>://localhost.pluraldev.sh:4455/oauth2/consent
+    url: <http|https>://localhost.traceshield.io:4455/oauth2/consent
     methods:
       - POST
   authenticators:
@@ -76,7 +89,7 @@
     strip_path: /.ory/kratos/public
     preserve_host: true
   match:
-    url: <http|https>://localhost.pluraldev.sh:4455/.ory/kratos/public/<.*>
+    url: <http|https>://localhost.traceshield.io:4455/.ory/kratos/public/<.*>
     methods:
       - GET
       - POST
@@ -95,7 +108,7 @@
     url: http://hydra-public.hydra:4444
     preserve_host: true
   match:
-    url: <http|https>://hydra.localhost.pluraldev.sh:4455<.*>
+    url: <http|https>://hydra.localhost.traceshield.io:4455<.*>
     methods:
       - GET
       - POST
@@ -114,7 +127,7 @@
     url: http://grafana.grafana:80
     preserve_host: true
   match:
-    url: <http|https>://grafana.localhost.pluraldev.sh:4455<.*>
+    url: <http|https>://grafana.localhost.traceshield.io:4455<.*>
     methods:
       - GET
       - POST
@@ -128,6 +141,231 @@
     handler: allow
   mutators:
     - handler: noop
+- id: grafana:mimir:read_metrics
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - GET
+      - POST
+    url: <http|https>://mimir.localhost.traceshield.io:4455/prometheus/api/v1/<status|query|query_range|query_exemplars|series|label|metadata|read|cardinality><.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "read_metrics",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:write_metrics
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - POST
+    url: <http|https>://mimir.localhost.traceshield.io:4455</api/v1/push.*|/otlp/v1/metrics.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "write_metrics",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:read_metrics_rules
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - GET
+    url: <http|https>://mimir.localhost.traceshield.io:4455</ruler/rule_groups.*|/prometheus/api/v1/rules.*|/prometheus/api/v1/alerts.*|/prometheus/config/v1/rules.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "read_metrics_rules",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:write_metrics_rules
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - POST
+    url: <http|https>://mimir.localhost.traceshield.io:4455/prometheus/config/v1/rules/<.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "write_metrics_rules",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:delete_metrics_rules
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - DELETE
+    url: <http|https>://mimir.localhost.traceshield.io:4455/prometheus/config/v1/rules/<.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "delete_metrics_rules",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:read_metrics_alerts
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - GET
+    url: <http|https>://mimir.localhost.traceshield.io:4455</multitenant_alertmanager/configs.*|/api/v1/alerts.*> #TODO: add /alertmanager
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "read_metrics_alerts",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:write_metrics_alerts
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - POST
+    url: <http|https>://mimir.localhost.traceshield.io:4455/api/v1/alerts<.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "write_metrics_alerts",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir:delete_metrics_alerts
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - DELETE
+    url: <http|https>://mimir.localhost.traceshield.io:4455/api/v1/alerts<.*>
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+  authorizer:
+    handler: remote_json
+    config:
+      remote: http://api-server.default.svc.cluster.local:8082/check
+      forward_response_headers_to_upstream:
+      - X-Scope-OrgID
+      payload: |
+        {
+          "subject": {{`"{{ print .Subject }}"`}},
+          "requestedPermission": "delete_metrics_alerts",
+          "isOAuth2Client": {{`{{ or (eq (print .Subject) (print .Extra.client_id)) (eq (print .Subject) (regexReplaceAll ":.*" (.MatchContext.Header.Get "Authorization" | trimPrefix "Basic " | b64dec) "")) }}`}}
+        }
+  mutators:
+    - handler: noop
+- id: grafana:mimir-alertmanager:protected
+  upstream:
+    url: http://mimir-nginx.mimir.svc.cluster.local
+    preserve_host: true
+  match:
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - OPTIONS
+    url: <http|https>://mimir.localhost.traceshield.io:4455/alertmanager<.*> # TODO: does this need to be separate
+  authenticators:
+    - handler: oauth2_introspection
+    - handler: oauth2_client_credentials
+    - handler: cookie_session
+  authorizer:
+    handler: allow
+  mutators:
+    - handler: hydrator
+      config:
+        api:
+          url: http://api-server.default.svc.cluster.local:8082/tenant-hydrator
 # - id: ory:kratos-selfservice-ui-node:anonymous
 #   upstream:
 #     url: http://oauth-stack-kratos-selfservice-ui-node # TODO: use proper templating
@@ -137,7 +375,7 @@
 #       - GET
 #       - POST # needed for consent
 #     # TODO: cleanup templating
-#     url: https://kratos.mimir-cloud.pluraldev.sh<{/,/registration,/welcome,/recovery,/verification,/login,/consent,/error,/404,/500,/**.css,/**.js,/**.png,/**.svg,/assets/**}>
+#     url: https://kratos.mimir-cloud.traceshield.io<{/,/registration,/welcome,/recovery,/verification,/login,/consent,/error,/404,/500,/**.css,/**.js,/**.png,/**.svg,/assets/**}>
 #   authenticators:
 #     - handler: noop
 #   authorizer:
@@ -153,7 +391,7 @@
 #     methods:
 #       - GET
 #     # TODO: cleanup templating
-#     url: https://kratos.mimir-cloud.pluraldev.sh/<{debug,dashboard,settings,sessions}{/,}>
+#     url: https://kratos.mimir-cloud.traceshield.io/<{debug,dashboard,settings,sessions}{/,}>
 #   authenticators:
 #     - handler: cookie_session
 #   authorizer:
@@ -163,7 +401,7 @@
 #   errors:
 #     - handler: redirect
 #       config:
-#         to: https://kratos.mimir-cloud.pluraldev.sh/login
+#         to: https://kratos.mimir-cloud.traceshield.io/login
 # - id: grafana:mimir-api:protected
 #   upstream:
 #     url: http://mimir-nginx.mimir # TODO: use proper templating
@@ -177,7 +415,7 @@
 #       - PATCH
 #       - OPTIONS
 #     # TODO: cleanup templating
-#     url: https://mimir.mimir-cloud.pluraldev.sh/api<**>
+#     url: https://mimir.mimir-cloud.traceshield.io/api<**>
 #   authenticators:
 #     - handler: oauth2_introspection
 #       # config:
@@ -204,7 +442,7 @@
 #       - PATCH
 #       - OPTIONS
 #     # TODO: cleanup templating
-#     url: https://mimir.mimir-cloud.pluraldev.sh/prometheus<**>
+#     url: https://mimir.mimir-cloud.traceshield.io/prometheus<**>
 #   authenticators:
 #     - handler: oauth2_introspection
 #       # config:
@@ -221,4 +459,4 @@
 #   errors:
 #     - handler: redirect
 #       config:
-#         to: https://kratos.mimir-cloud.pluraldev.sh/login
+#         to: https://kratos.mimir-cloud.traceshield.io/login

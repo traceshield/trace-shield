@@ -64,7 +64,7 @@ query{
 }
 
 mutation{
-  organization(name: "main", admins: 
+  organization(name: "main", admins:
   [
     "2294d0d3-3836-4c0d-93a7-2e3862ec9fdc"
   ]
@@ -220,7 +220,7 @@ mutation{
       ]
     }
     redirectUris: [
-        "https://grafana.mimir-cloud.pluraldev.sh/login/generic_oauth"
+        "https://grafana.mimir-cloud.traceshield.io/login/generic_oauth"
       ],
     responseTypes: [
         "id_token",
@@ -298,7 +298,7 @@ mutation{
       ]
     }
     redirectUris: [
-        "https://grafana.mimir-cloud.pluraldev.sh/login/generic_oauth"
+        "https://grafana.mimir-cloud.traceshield.io/login/generic_oauth"
       	"https://grafana.test.sh/login/generic_oauth"
       ],
     responseTypes: [

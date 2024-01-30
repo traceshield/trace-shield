@@ -32,6 +32,8 @@ func CreateContext(args *ClientContext) func(http.Handler) http.Handler {
 				KratosPublicClient: args.KratosPublicClient,
 				KetoClient:         args.KetoClient,
 				HydraClient:        args.HydraClient,
+				Tracer:             args.Tracer,
+				Log:                args.Log,
 			}
 			requestWithCtx := r.WithContext(context.WithValue(r.Context(), clientContextKey, ClientContext))
 			next.ServeHTTP(w, requestWithCtx)

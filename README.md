@@ -8,10 +8,10 @@ Go into the `api-server` directory and run `make setup-tilt-cluster` to create a
 
 Next, run `tilt up` which will proceed to install Kratos, Hydra, OAuthkeeper, Keto, Grafana, the API server and the frontend to the cluster.
 
-The frontend can be accessed at `https://localhost.pluraldev.sh:4455/`.
-The GraphiQL interface can be accessed at `https://localhost.pluraldev.sh:4455/graphiql`.
-Grafana can be accessed at `https://grafana.localhost.pluraldev.sh:4455/`.
-Hydra is hosted on `https://hydra.localhost.pluraldev.sh:4455/`.
+The frontend can be accessed at `https://localhost.traceshield.io:4455/`.
+The GraphiQL interface can be accessed at `https://localhost.traceshield.io:4455/graphiql`.
+Grafana can be accessed at `https://grafana.localhost.traceshield.io:4455/`.
+Hydra is hosted on `https://hydra.localhost.traceshield.io:4455/`.
 
 The helm values and other configs used for the deployment (like the oathkeeper access rules and keto namespace configs) can be found in `api-server/dev`.
 

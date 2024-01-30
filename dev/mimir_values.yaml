@@ -1,0 +1,78 @@
+minio:
+  enabled: false
+
+ingester:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+
+querier:
+  replicas: 1
+
+query_scheduler:
+  replicas: 1
+
+store_gateway:
+  replicas: 1
+  zoneAwareReplication:
+    enabled: false
+
+mimir:
+  structuredConfig:
+    tenant_federation:
+      enabled: true
+    ruler:
+      tenant_federation:
+        enabled: true
+    limits:
+      ruler_max_rules_per_rule_group: 80
+      max_global_series_per_user: 0 # TODO: check what we should actually set here
+      max_label_names_per_series: 45
+    alertmanager:
+      external_url: https://mimir.localhost.traceshield.io:4455/alertmanager
+    common:
+      storage:
+        backend: s3
+        s3:
+          endpoint: minio.minio.svc:9000
+          access_key_id: admin
+          insecure: true
+          secret_access_key: password
+          # region: {{ .Region }}
+    blocks_storage:
+      backend: s3
+      s3:
+        # access_key_id: admin
+        bucket_name: mimir-tsdb
+        # endpoint: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc:9000
+        # insecure: true
+        # secret_access_key: {{ .Values.minio.rootPassword }}
+    alertmanager_storage:
+      backend: s3
+      s3:
+        # access_key_id: admin
+        bucket_name: mimir-ruler
+        # endpoint: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc:9000
+        # insecure: true
+        # secret_access_key: {{ .Values.minio.rootPassword }}
+    ruler_storage:
+      backend: s3
+      s3:
+        # access_key_id: admin
+        bucket_name: mimir-ruler
+        # endpoint: {{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc:9000
+        # insecure: true
+        # secret_access_key: {{ .Values.minio.rootPassword }}
+metaMonitoring:
+  dashboards:
+    enabled: true
+  # serviceMonitor:
+  #   enabled: true
+  #   clusterLabel: internal
+  # prometheusRule:
+  #   enabled: true
+  #   mimirAlerts: true
+  #   mimirRules: true
+  # grafanaAgent:
+  #   enabled: true
+  #   installOperator: true

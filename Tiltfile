@@ -9,135 +9,135 @@ helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts')
 ## Grafana
 
 helm_resource(
-    'grafana',
-    'grafana/grafana',
-    namespace='grafana',
-    flags=[
-        '--create-namespace',
-        '--values=./dev/grafana_values.yaml',
-        ],
-    deps=['./dev/grafana_values.yaml'],
-    labels=['grafana'],
-    resource_deps=['grafana-helm'],
+  'grafana',
+  'grafana/grafana',
+  namespace='grafana',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/grafana_values.yaml',
+    ],
+  deps=['./dev/grafana_values.yaml'],
+  labels=['grafana'],
+  resource_deps=['grafana-helm'],
 )
 
 ## Kratos
 
 helm_resource(
-    'postgresql-kratos',
-    'bitnami/postgresql',
-    namespace='kratos',
-    flags=['--create-namespace', '--values=./dev/postgres_kratos_values.yaml'],
-    deps=['./dev/postgres_kratos_values.yaml'],
-    labels=['kratos'],
-    resource_deps=['bitnami']
+  'postgresql-kratos',
+  'bitnami/postgresql',
+  namespace='kratos',
+  flags=['--create-namespace', '--values=./dev/postgres_kratos_values.yaml'],
+  deps=['./dev/postgres_kratos_values.yaml'],
+  labels=['kratos'],
+  resource_deps=['bitnami']
 )
 
 helm_resource(
-    'kratos',
-    'ory/kratos',
-    namespace='kratos',
-    flags=[
-        '--create-namespace',
-        '--values=./dev/kratos_values.yaml',
-        "--set-file=kratos.identitySchemas.identity\\.person\\.schema\\.json=./dev/configs/kratos/identity.person.schema.json",
-        ],
-    deps=['./dev/kratos_values.yaml', './dev/configs/kratos/'],
-    labels=['kratos'],
-    resource_deps=['ory', 'postgres-kratos'],
+  'kratos',
+  'ory/kratos',
+  namespace='kratos',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/kratos_values.yaml',
+    "--set-file=kratos.identitySchemas.identity\\.person\\.schema\\.json=./dev/configs/kratos/identity.person.schema.json",
+    ],
+  deps=['./dev/kratos_values.yaml', './dev/configs/kratos/'],
+  labels=['kratos'],
+  resource_deps=['ory', 'postgres-kratos'],
 )
 
 # needed so we get the kratos logs and not the courier logs. TODO: figure out how to show both
 k8s_resource(
-    workload='kratos',
-    extra_pod_selectors=[{'app.kubernetes.io/name': 'kratos'}],
-    discovery_strategy='selectors-only'
+  workload='kratos',
+  extra_pod_selectors=[{'app.kubernetes.io/name': 'kratos'}],
+  discovery_strategy='selectors-only'
 )
 
 ## Oathkeeper
 
 helm_resource(
-    'oathkeeper',
-    'ory/oathkeeper',
-    namespace='oathkeeper',
-    flags=[
-        '--create-namespace',
-        '--values=./dev/oathkeeper_values.yaml',
-        "--set-file=oathkeeper.accessRules=./dev/configs/oathkeeper/access-rules.yaml",
-        ],
-    deps=['./dev/oathkeeper_values.yaml', './dev/configs/oathkeeper/'],
-    labels=['oathkeeper'],
-    resource_deps=['ory'],
-    )
+  'oathkeeper',
+  'ory/oathkeeper',
+  namespace='oathkeeper',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/oathkeeper_values.yaml',
+    "--set-file=oathkeeper.accessRules=./dev/configs/oathkeeper/access-rules.yaml",
+    ],
+  deps=['./dev/oathkeeper_values.yaml', './dev/configs/oathkeeper/'],
+  labels=['oathkeeper'],
+  resource_deps=['ory'],
+)
 
 k8s_resource(
-   workload='oathkeeper',
-   port_forwards=[
-      port_forward(4455, 4455, name='http-proxy'),
-   ]
+  workload='oathkeeper',
+  port_forwards=[
+    port_forward(4455, 4455, name='http-proxy'),
+  ]
 )
 
 ## Hydra
 
 helm_resource(
-    'postgresql-hydra',
-    'bitnami/postgresql',
-    namespace='hydra',
-    flags=['--create-namespace', '--values=./dev/postgres_hydra_values.yaml'],
-    deps=['./dev/postgres_hydra_values.yaml'],
-    labels=['hydra'],
-    resource_deps=['bitnami']
+  'postgresql-hydra',
+  'bitnami/postgresql',
+  namespace='hydra',
+  flags=['--create-namespace', '--values=./dev/postgres_hydra_values.yaml'],
+  deps=['./dev/postgres_hydra_values.yaml'],
+  labels=['hydra'],
+  resource_deps=['bitnami']
 )
 
 helm_resource(
-    'hydra',
-    'ory/hydra',
-    namespace='hydra',
-    flags=[
-        '--create-namespace',
-        '--values=./dev/hydra_values.yaml',
-        ],
-    deps=['./dev/hydra_values.yaml'],
-    labels=['hydra'],
-    resource_deps=['ory', 'postgres-hydra'],
+  'hydra',
+  'ory/hydra',
+  namespace='hydra',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/hydra_values.yaml',
+    ],
+  deps=['./dev/hydra_values.yaml'],
+  labels=['hydra'],
+  resource_deps=['ory', 'postgres-hydra'],
 )
 
 ## Keto
 
 helm_resource(
-    'postgresql-keto',
-    'bitnami/postgresql',
-    namespace='keto',
-    flags=['--create-namespace', '--values=./dev/postgres_keto_values.yaml'],
-    deps=['./dev/postgres_keto_values.yaml'],
-    labels=['keto'],
-    resource_deps=['bitnami']
+  'postgresql-keto',
+  'bitnami/postgresql',
+  namespace='keto',
+  flags=['--create-namespace', '--values=./dev/postgres_keto_values.yaml'],
+  deps=['./dev/postgres_keto_values.yaml'],
+  labels=['keto'],
+  resource_deps=['bitnami']
 )
 
 helm_resource(
-    'keto',
-    'ory/keto',
-    namespace='keto',
-    flags=[
-        '--create-namespace',
-        '--values=./dev/keto_values.yaml',
-        ],
-    deps=['./dev/keto_values.yaml'],
-    labels=['keto'],
-    resource_deps=['ory', 'postgres-keto'],
+  'keto',
+  'ory/keto',
+  namespace='keto',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/keto_values.yaml',
+    ],
+  deps=['./dev/keto_values.yaml'],
+  labels=['keto'],
+  resource_deps=['ory', 'postgres-keto'],
 )
 
 configmap_create(
-    'keto-namespaces-config',
-    namespace='keto',
-    from_file='namespaces.keto.ts=./dev/configs/keto/opl_ts/src/observability.ts',
-    watch=True
+  'keto-namespaces-config',
+  namespace='keto',
+  from_file='namespaces.keto.ts=./dev/configs/keto/opl_ts/src/observability.ts',
+  watch=True
 )
 
 k8s_resource(
-    new_name='keto-namespace-config',
-    objects=['keto-namespaces-config'],
-    labels=['keto'],
+  new_name='keto-namespace-config',
+  objects=['keto-namespaces-config'],
+  labels=['keto'],
 )
 
 ## API Server
@@ -158,14 +158,53 @@ docker_build(
 )
 
 k8s_yaml(
-    './dev/api-deployment.yaml'
+  './dev/api-deployment.yaml'
 )
 
 k8s_resource(
-    'api-server',
-    labels=['api-server'],
+  'api-server',
+  labels=['api-server'],
 )
 
 # frontend
 
 include('./frontend/Tiltfile')
+
+# MinIO
+
+helm_resource(
+  'minio',
+  'oci://registry-1.docker.io/bitnamicharts/minio',
+  namespace='minio',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/minio_values.yaml',
+    ],
+  deps=['./dev/minio_values.yaml'],
+  labels=['minio'],
+  # resource_deps=['ory', 'postgres-keto'],
+)
+
+k8s_resource(
+  workload='minio',
+  port_forwards=[
+    port_forward(9000, 9000, name='minio-api'),
+    port_forward(9001, 9001, name='minio-console'),
+  ]
+)
+
+
+# Mimir
+
+helm_resource(
+  'mimir',
+  'grafana/mimir-distributed',
+  namespace='mimir',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/mimir_values.yaml',
+    ],
+  deps=['./dev/mimir_values.yaml'],
+  labels=['mimir'],
+  resource_deps=['grafana-helm', 'minio'],
+)

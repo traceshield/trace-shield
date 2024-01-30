@@ -22,10 +22,10 @@ docker_build(
 )
 
 k8s_yaml(
-    './dev/frontend-deployment.yaml'
-    )
+  './dev/frontend-deployment.yaml'
+  )
 
 k8s_resource(
-    'frontend',
-    labels=['frontend'],
-    )
+  'frontend',
+  labels=['frontend'],
+  )

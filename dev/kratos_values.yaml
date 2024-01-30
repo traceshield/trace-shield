@@ -10,19 +10,19 @@ kratos:
     dev: true
     serve:
       public:
-        base_url: https://localhost.pluraldev.sh:4455/.ory/kratos/public/
+        base_url: https://localhost.traceshield.io:4455/.ory/kratos/public/
         cors:
           enabled: true
           allowed_origins:
           - http://localhost:3000
           - https://localhost:3000
-          - http://localhost.pluraldev.sh:4455
-          - https://localhost.pluraldev.sh:4455
+          - http://localhost.traceshield.io:4455
+          - https://localhost.traceshield.io:4455
     dsn: postgres://kratos:kratospassword@postgresql-kratos:5432/kratos
     oauth2_provider:
       url: http://hydra-admin.hydra:4445
     selfservice:
-      default_browser_return_url: https://localhost.pluraldev.sh:4455/
+      default_browser_return_url: https://localhost.traceshield.io:4455/
 
       methods:
         password:
@@ -32,43 +32,50 @@ kratos:
           config:
             passwordless: true
             rp:
-              id: localhost.pluraldev.sh
+              id: localhost.traceshield.io
               display_name: Ory Foundation
               icon: https://www.ory.sh/an-icon.png
-              origin: https://localhost.pluraldev.sh:4455/login
+              origin: https://localhost.traceshield.io:4455/login
 
       flows:
         error:
-          ui_url: https://localhost.pluraldev.sh:4455/error
+          ui_url: https://localhost.traceshield.io:4455/error
 
         settings:
-          ui_url: https://localhost.pluraldev.sh:4455/settings
+          ui_url: https://localhost.traceshield.io:4455/settings
           privileged_session_max_age: 15m
 
         recovery:
           enabled: true
-          ui_url: https://localhost.pluraldev.sh:4455/recovery
+          ui_url: https://localhost.traceshield.io:4455/recovery
 
         verification:
           enabled: true
-          ui_url: https://localhost.pluraldev.sh:4455/verification
+          ui_url: https://localhost.traceshield.io:4455/verification
           after:
-            default_browser_return_url: https://localhost.pluraldev.sh:4455/
+            default_browser_return_url: https://localhost.traceshield.io:4455/
 
         logout:
           after:
-            default_browser_return_url: https://localhost.pluraldev.sh:4455/login
+            default_browser_return_url: https://localhost.traceshield.io:4455/login
 
         login:
-          ui_url: https://localhost.pluraldev.sh:4455/login
+          ui_url: https://localhost.traceshield.io:4455/login
           lifespan: 10m
 
         registration:
           lifespan: 10m
-          ui_url: https://localhost.pluraldev.sh:4455/registration
+          ui_url: https://localhost.traceshield.io:4455/registration
           after:
             password:
               hooks:
+                - hook: web_hook
+                  config:
+                    url: http://api-server.default.svc.cluster.local:8082/user-webhook
+                    method: POST
+                    # response:
+                    #   parse: true
+                    body: base64://ZnVuY3Rpb24oY3R4KSB7IHVzZXJJZDogY3R4LmlkZW50aXR5LmlkIH0K
                 - hook: session
             webauthn:
               hooks:
