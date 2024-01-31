@@ -3,16 +3,16 @@ module github.com/traceshield/trace-shield
 go 1.20
 
 require (
-	github.com/99designs/gqlgen v0.17.41
-	github.com/Yamashou/gqlgenc v0.14.0
-	github.com/go-chi/chi/v5 v5.0.8
+	github.com/99designs/gqlgen v0.17.43
+	github.com/Yamashou/gqlgenc v0.16.2
+	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-logr/logr v1.4.1
 	github.com/ory/keto/proto v0.11.1-alpha.0
 	github.com/ory/kratos-client-go v0.13.1
 	github.com/ravilushqa/otelgqlgen v0.15.0
 	github.com/rs/cors v1.9.0
-	github.com/traceshield/trace-shield-controller v0.3.26
-	github.com/vektah/gqlparser/v2 v2.5.10
+	github.com/traceshield/trace-shield-controller v0.3.27
+	github.com/vektah/gqlparser/v2 v2.5.11
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0
 	go.opentelemetry.io/contrib/propagators/b3 v1.22.0
@@ -86,14 +86,14 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/oauth2 v0.15.0
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	golang.org/x/tools v0.10.0 // indirect
+	golang.org/x/tools v0.13.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240102182953-50ed04b92917 // indirect

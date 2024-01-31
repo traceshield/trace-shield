@@ -11261,6 +11261,10 @@ func (c *Client) GetGroup(ctx context.Context, name string, interceptors ...clie
 
 	var res GetGroup
 	if err := c.Client.Post(ctx, "GetGroup", GetGroupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11293,6 +11297,10 @@ func (c *Client) ListGroups(ctx context.Context, interceptors ...clientv2.Reques
 
 	var res ListGroups
 	if err := c.Client.Post(ctx, "ListGroups", ListGroupsDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11328,6 +11336,10 @@ func (c *Client) UpdateGroup(ctx context.Context, name string, members []*model.
 
 	var res UpdateGroup
 	if err := c.Client.Post(ctx, "UpdateGroup", UpdateGroupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11363,6 +11375,10 @@ func (c *Client) CreateGroup(ctx context.Context, name string, members []*model.
 
 	var res CreateGroup
 	if err := c.Client.Post(ctx, "CreateGroup", CreateGroupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11383,6 +11399,10 @@ func (c *Client) DeleteGroup(ctx context.Context, name string, interceptors ...c
 
 	var res DeleteGroup
 	if err := c.Client.Post(ctx, "DeleteGroup", DeleteGroupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11449,6 +11469,10 @@ func (c *Client) ListOAuth2Clients(ctx context.Context, interceptors ...clientv2
 
 	var res ListOAuth2Clients
 	if err := c.Client.Post(ctx, "ListOAuth2Clients", ListOAuth2ClientsDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11517,6 +11541,10 @@ func (c *Client) GetOAuth2Client(ctx context.Context, clientID string, intercept
 
 	var res GetOAuth2Client
 	if err := c.Client.Post(ctx, "GetOAuth2Client", GetOAuth2ClientDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11537,6 +11565,10 @@ func (c *Client) DeleteOAuth2Client(ctx context.Context, clientID string, interc
 
 	var res DeleteOAuth2Client
 	if err := c.Client.Post(ctx, "DeleteOAuth2Client", DeleteOAuth2ClientDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11640,6 +11672,10 @@ func (c *Client) UpdateOAuth2Client(ctx context.Context, allowedCorsOrigins []st
 
 	var res UpdateOAuth2Client
 	if err := c.Client.Post(ctx, "UpdateOAuth2Client", UpdateOAuth2ClientDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11742,6 +11778,10 @@ func (c *Client) CreateOAuth2Client(ctx context.Context, allowedCorsOrigins []st
 
 	var res CreateOAuth2Client
 	if err := c.Client.Post(ctx, "CreateOAuth2Client", CreateOAuth2ClientDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11795,6 +11835,10 @@ func (c *Client) GetOAuth2ConsentRequest(ctx context.Context, challenge string, 
 
 	var res GetOAuth2ConsentRequest
 	if err := c.Client.Post(ctx, "GetOAuth2ConsentRequest", GetOAuth2ConsentRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11818,6 +11862,10 @@ func (c *Client) AcceptOAuth2ConsentRequest(ctx context.Context, challenge strin
 
 	var res AcceptOAuth2ConsentRequest
 	if err := c.Client.Post(ctx, "AcceptOAuth2ConsentRequest", AcceptOAuth2ConsentRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11838,6 +11886,10 @@ func (c *Client) RejectOAuth2ConsentRequest(ctx context.Context, challenge strin
 
 	var res RejectOAuth2ConsentRequest
 	if err := c.Client.Post(ctx, "RejectOAuth2ConsentRequest", RejectOAuth2ConsentRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11889,6 +11941,10 @@ func (c *Client) GetOAuth2LoginRequest(ctx context.Context, challenge string, in
 
 	var res GetOAuth2LoginRequest
 	if err := c.Client.Post(ctx, "GetOAuth2LoginRequest", GetOAuth2LoginRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11915,6 +11971,10 @@ func (c *Client) AcceptOAuth2LoginRequest(ctx context.Context, challenge string,
 
 	var res AcceptOAuth2LoginRequest
 	if err := c.Client.Post(ctx, "AcceptOAuth2LoginRequest", AcceptOAuth2LoginRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -11935,6 +11995,10 @@ func (c *Client) RejectOAuth2LoginRequest(ctx context.Context, challenge string,
 
 	var res RejectOAuth2LoginRequest
 	if err := c.Client.Post(ctx, "RejectOAuth2LoginRequest", RejectOAuth2LoginRequestDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -12352,6 +12416,10 @@ func (c *Client) ListObservabilityTenants(ctx context.Context, interceptors ...c
 
 	var res ListObservabilityTenants
 	if err := c.Client.Post(ctx, "ListObservabilityTenants", ListObservabilityTenantsDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -12771,6 +12839,10 @@ func (c *Client) GetObservabilityTenant(ctx context.Context, id string, intercep
 
 	var res GetObservabilityTenant
 	if err := c.Client.Post(ctx, "GetObservabilityTenant", GetObservabilityTenantDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13207,6 +13279,10 @@ func (c *Client) CreateObservabilityTenant(ctx context.Context, id string, name 
 
 	var res CreateObservabilityTenant
 	if err := c.Client.Post(ctx, "CreateObservabilityTenant", CreateObservabilityTenantDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13643,6 +13719,10 @@ func (c *Client) UpdateObservabilityTenant(ctx context.Context, id string, name 
 
 	var res UpdateObservabilityTenant
 	if err := c.Client.Post(ctx, "UpdateObservabilityTenant", UpdateObservabilityTenantDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13663,6 +13743,10 @@ func (c *Client) DeleteObservabilityTenant(ctx context.Context, id string, inter
 
 	var res DeleteObservabilityTenant
 	if err := c.Client.Post(ctx, "DeleteObservabilityTenant", DeleteObservabilityTenantDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13692,6 +13776,10 @@ func (c *Client) ListUsers(ctx context.Context, interceptors ...clientv2.Request
 
 	var res ListUsers
 	if err := c.Client.Post(ctx, "ListUsers", ListUsersDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13723,6 +13811,10 @@ func (c *Client) GetUser(ctx context.Context, id string, interceptors ...clientv
 
 	var res GetUser
 	if err := c.Client.Post(ctx, "GetUser", GetUserDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13755,6 +13847,10 @@ func (c *Client) CreateUser(ctx context.Context, email string, name *model.NameI
 
 	var res CreateUser
 	if err := c.Client.Post(ctx, "CreateUser", CreateUserDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
@@ -13775,8 +13871,40 @@ func (c *Client) DeleteUser(ctx context.Context, id string, interceptors ...clie
 
 	var res DeleteUser
 	if err := c.Client.Post(ctx, "DeleteUser", DeleteUserDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
 		return nil, err
 	}
 
 	return &res, nil
+}
+
+var DocumentOperationNames = map[string]string{
+	GetGroupDocument:                   "GetGroup",
+	ListGroupsDocument:                 "ListGroups",
+	UpdateGroupDocument:                "UpdateGroup",
+	CreateGroupDocument:                "CreateGroup",
+	DeleteGroupDocument:                "DeleteGroup",
+	ListOAuth2ClientsDocument:          "ListOAuth2Clients",
+	GetOAuth2ClientDocument:            "GetOAuth2Client",
+	DeleteOAuth2ClientDocument:         "DeleteOAuth2Client",
+	UpdateOAuth2ClientDocument:         "UpdateOAuth2Client",
+	CreateOAuth2ClientDocument:         "CreateOAuth2Client",
+	GetOAuth2ConsentRequestDocument:    "GetOAuth2ConsentRequest",
+	AcceptOAuth2ConsentRequestDocument: "AcceptOAuth2ConsentRequest",
+	RejectOAuth2ConsentRequestDocument: "RejectOAuth2ConsentRequest",
+	GetOAuth2LoginRequestDocument:      "GetOAuth2LoginRequest",
+	AcceptOAuth2LoginRequestDocument:   "AcceptOAuth2LoginRequest",
+	RejectOAuth2LoginRequestDocument:   "RejectOAuth2LoginRequest",
+	ListObservabilityTenantsDocument:   "ListObservabilityTenants",
+	GetObservabilityTenantDocument:     "GetObservabilityTenant",
+	CreateObservabilityTenantDocument:  "CreateObservabilityTenant",
+	UpdateObservabilityTenantDocument:  "UpdateObservabilityTenant",
+	DeleteObservabilityTenantDocument:  "DeleteObservabilityTenant",
+	ListUsersDocument:                  "ListUsers",
+	GetUserDocument:                    "GetUser",
+	CreateUserDocument:                 "CreateUser",
+	DeleteUserDocument:                 "DeleteUser",
 }

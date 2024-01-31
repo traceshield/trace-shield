@@ -44,6 +44,9 @@ type LoginBindingsInput struct {
 	Groups []*GroupInput `json:"groups,omitempty"`
 }
 
+type Mutation struct {
+}
+
 // The first and last name of a user.
 type Name struct {
 	// The user's first name.
@@ -308,6 +311,9 @@ type OidcContext struct {
 type Organization struct {
 	// The users that are admins of the organization.
 	Admins []*User `json:"admins,omitempty"`
+}
+
+type Query struct {
 }
 
 // Representation of the information about a user sourced from Kratos.

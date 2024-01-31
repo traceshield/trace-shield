@@ -27,6 +27,7 @@ import (
 // NewExecutableSchema creates an ExecutableSchema from the ResolverRoot interface.
 func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 	return &executableSchema{
+		schema:     cfg.Schema,
 		resolvers:  cfg.Resolvers,
 		directives: cfg.Directives,
 		complexity: cfg.Complexity,
@@ -34,6 +35,7 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 }
 
 type Config struct {
+	Schema     *ast.Schema
 	Resolvers  ResolverRoot
 	Directives DirectiveRoot
 	Complexity ComplexityRoot
@@ -591,12 +593,16 @@ type BlockedQueryInputResolver interface {
 }
 
 type executableSchema struct {
+	schema     *ast.Schema
 	resolvers  ResolverRoot
 	directives DirectiveRoot
 	complexity ComplexityRoot
 }
 
 func (e *executableSchema) Schema() *ast.Schema {
+	if e.schema != nil {
+		return e.schema
+	}
 	return parsedSchema
 }
 
@@ -3329,14 +3335,14 @@ func (ec *executionContext) introspectSchema() (*introspection.Schema, error) {
 	if ec.DisableIntrospection {
 		return nil, errors.New("introspection disabled")
 	}
-	return introspection.WrapSchema(parsedSchema), nil
+	return introspection.WrapSchema(ec.Schema()), nil
 }
 
 func (ec *executionContext) introspectType(name string) (*introspection.Type, error) {
 	if ec.DisableIntrospection {
 		return nil, errors.New("introspection disabled")
 	}
-	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
+	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
 var sources = []*ast.Source{
@@ -24440,8 +24446,6 @@ func (ec *executionContext) unmarshalInputAcceptOAuth2ConsentRequestSession(ctx 
 		}
 		switch k {
 		case "accessToken":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accessToken"))
 			data, err := ec.unmarshalOMap2map(ctx, v)
 			if err != nil {
@@ -24449,8 +24453,6 @@ func (ec *executionContext) unmarshalInputAcceptOAuth2ConsentRequestSession(ctx 
 			}
 			it.AccessToken = data
 		case "idToken":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idToken"))
 			data, err := ec.unmarshalOMap2map(ctx, v)
 			if err != nil {
@@ -24478,8 +24480,6 @@ func (ec *executionContext) unmarshalInputBlockedQueryInput(ctx context.Context,
 		}
 		switch k {
 		case "pattern":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pattern"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -24487,8 +24487,6 @@ func (ec *executionContext) unmarshalInputBlockedQueryInput(ctx context.Context,
 			}
 			it.Pattern = data
 		case "regex":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regex"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24496,8 +24494,6 @@ func (ec *executionContext) unmarshalInputBlockedQueryInput(ctx context.Context,
 			}
 			it.Regex = data
 		case "hash":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hash"))
 			data, err := ec.unmarshalOUInt2ᚖuint32(ctx, v)
 			if err != nil {
@@ -24505,8 +24501,6 @@ func (ec *executionContext) unmarshalInputBlockedQueryInput(ctx context.Context,
 			}
 			it.Hash = data
 		case "types":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("types"))
 			data, err := ec.unmarshalOBlockedQueryType2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryTypeᚄ(ctx, v)
 			if err != nil {
@@ -24536,8 +24530,6 @@ func (ec *executionContext) unmarshalInputDimensionMappingsInput(ctx context.Con
 		}
 		switch k {
 		case "name":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -24545,8 +24537,6 @@ func (ec *executionContext) unmarshalInputDimensionMappingsInput(ctx context.Con
 			}
 			it.Name = data
 		case "sourceLabel":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceLabel"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -24554,8 +24544,6 @@ func (ec *executionContext) unmarshalInputDimensionMappingsInput(ctx context.Con
 			}
 			it.SourceLabel = data
 		case "join":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("join"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -24583,8 +24571,6 @@ func (ec *executionContext) unmarshalInputFilterPolicyInput(ctx context.Context,
 		}
 		switch k {
 		case "include":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("include"))
 			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
 			if err != nil {
@@ -24592,8 +24578,6 @@ func (ec *executionContext) unmarshalInputFilterPolicyInput(ctx context.Context,
 			}
 			it.Include = data
 		case "exclude":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("exclude"))
 			data, err := ec.unmarshalOPolicyMatchInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐPolicyMatch(ctx, v)
 			if err != nil {
@@ -24621,8 +24605,6 @@ func (ec *executionContext) unmarshalInputGroupInput(ctx context.Context, obj in
 		}
 		switch k {
 		case "name":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
@@ -24650,8 +24632,6 @@ func (ec *executionContext) unmarshalInputLoginBindingsInput(ctx context.Context
 		}
 		switch k {
 		case "users":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("users"))
 			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
 			if err != nil {
@@ -24659,8 +24639,6 @@ func (ec *executionContext) unmarshalInputLoginBindingsInput(ctx context.Context
 			}
 			it.Users = data
 		case "groups":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("groups"))
 			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
 			if err != nil {
@@ -24688,8 +24666,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 		}
 		switch k {
 		case "ingestionRateStrategy":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionRateStrategy"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -24697,8 +24673,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.IngestionRateStrategy = data
 		case "ingestionRateMB":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionRateMB"))
 			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
 			if err != nil {
@@ -24706,8 +24680,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.IngestionRateMB = data
 		case "ingestionBurstSizeMB":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionBurstSizeMB"))
 			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
 			if err != nil {
@@ -24715,8 +24687,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.IngestionBurstSizeMB = data
 		case "maxLabelNameLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelNameLength"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24724,8 +24694,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLabelNameLength = data
 		case "maxLabelValueLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelValueLength"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24733,8 +24701,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLabelValueLength = data
 		case "maxLabelNamesPerSeries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelNamesPerSeries"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24742,8 +24708,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLabelNamesPerSeries = data
 		case "rejectOldSamples":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rejectOldSamples"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24751,8 +24715,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RejectOldSamples = data
 		case "rejectOldSamplesMaxAge":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rejectOldSamplesMaxAge"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24760,8 +24722,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RejectOldSamplesMaxAge = data
 		case "creationGracePeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("creationGracePeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24769,8 +24729,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.CreationGracePeriod = data
 		case "enforceMetricName":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("enforceMetricName"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24778,8 +24736,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.EnforceMetricName = data
 		case "maxLineSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLineSize"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -24787,8 +24743,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLineSize = data
 		case "maxLineSizeTruncate":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLineSizeTruncate"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24796,8 +24750,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLineSizeTruncate = data
 		case "incrementDuplicateTimestamp":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("incrementDuplicateTimestamp"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24805,8 +24757,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.IncrementDuplicateTimestamp = data
 		case "maxLocalStreamsPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLocalStreamsPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24814,8 +24764,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxLocalStreamsPerUser = data
 		case "maxGlobalStreamsPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalStreamsPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24823,8 +24771,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxGlobalStreamsPerUser = data
 		case "unorderedWrites":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("unorderedWrites"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -24832,8 +24778,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.UnorderedWrites = data
 		case "perStreamRateLimit":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("perStreamRateLimit"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -24841,8 +24785,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.PerStreamRateLimit = data
 		case "perStreamRateLimitBurst":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("perStreamRateLimitBurst"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -24850,8 +24792,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.PerStreamRateLimitBurst = data
 		case "maxChunksPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxChunksPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24859,8 +24799,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxChunksPerQuery = data
 		case "maxQuerySeries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQuerySeries"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24868,8 +24806,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQuerySeries = data
 		case "maxQueryLookback":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryLookback"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24877,8 +24813,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueryLookback = data
 		case "maxQueryLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryLength"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24886,8 +24820,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueryLength = data
 		case "maxQueryRange":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryRange"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24895,8 +24827,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueryRange = data
 		case "maxQueryParallelism":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryParallelism"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24904,8 +24834,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueryParallelism = data
 		case "tsdbMaxQueryParallelism":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tsdbMaxQueryParallelism"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24913,8 +24841,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.TSDBMaxQueryParallelism = data
 		case "tsdbMaxBytesPerShard":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tsdbMaxBytesPerShard"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -24922,8 +24848,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.TSDBMaxBytesPerShard = data
 		case "cardinalityLimit":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cardinalityLimit"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24931,8 +24855,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.CardinalityLimit = data
 		case "maxStreamsMatchersPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxStreamsMatchersPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24940,8 +24862,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxStreamsMatchersPerQuery = data
 		case "maxConcurrentTailRequests":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxConcurrentTailRequests"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24949,8 +24869,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxConcurrentTailRequests = data
 		case "maxEntriesLimitPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxEntriesLimitPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24958,8 +24876,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxEntriesLimitPerQuery = data
 		case "maxCacheFreshness":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxCacheFreshness"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24967,8 +24883,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxCacheFreshness = data
 		case "maxStatsCacheFreshness":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxStatsCacheFreshness"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -24976,8 +24890,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxStatsCacheFreshness = data
 		case "maxQueriersPerTenant":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueriersPerTenant"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24985,8 +24897,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueriersPerTenant = data
 		case "queryReadyIndexNumDays":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("queryReadyIndexNumDays"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -24994,8 +24904,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.QueryReadyIndexNumDays = data
 		case "queryTimeout":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("queryTimeout"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25003,8 +24911,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.QueryTimeout = data
 		case "querySplitDuration":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("querySplitDuration"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25012,8 +24918,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.QuerySplitDuration = data
 		case "minShardingLookback":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minShardingLookback"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25021,8 +24925,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MinShardingLookback = data
 		case "maxQueryBytesRead":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryBytesRead"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -25030,8 +24932,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQueryBytesRead = data
 		case "maxQuerierBytesRead":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQuerierBytesRead"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -25039,8 +24939,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.MaxQuerierBytesRead = data
 		case "volumeEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("volumeEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25048,8 +24946,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.VolumeEnabled = data
 		case "volumeMaxSeries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("volumeMaxSeries"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25057,8 +24953,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.VolumeMaxSeries = data
 		case "rulerEvaluationDelay":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerEvaluationDelay"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25066,8 +24960,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerEvaluationDelay = data
 		case "rulerMaxRulesPerRuleGroup":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerMaxRulesPerRuleGroup"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25075,8 +24967,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerMaxRulesPerRuleGroup = data
 		case "rulerMaxRuleGroupsPerTenant":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerMaxRuleGroupsPerTenant"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25084,8 +24974,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerMaxRuleGroupsPerTenant = data
 		case "rulerAlertManagerConfig":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerAlertManagerConfig"))
 			data, err := ec.unmarshalORulerAlertManagerConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRulerAlertManagerConfig(ctx, v)
 			if err != nil {
@@ -25093,8 +24981,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerAlertManagerConfig = data
 		case "rulerTenantShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerTenantShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25102,8 +24988,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerTenantShardSize = data
 		case "rulerRemoteWriteDisabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerRemoteWriteDisabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25111,8 +24995,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerRemoteWriteDisabled = data
 		case "rulerRemoteEvaluationTimeout":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerRemoteEvaluationTimeout"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25120,8 +25002,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerRemoteEvaluationTimeout = data
 		case "rulerRemoteEvaluationMaxResponseSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerRemoteEvaluationMaxResponseSize"))
 			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
 			if err != nil {
@@ -25129,8 +25009,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RulerRemoteEvaluationMaxResponseSize = data
 		case "deletionMode":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deletionMode"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25138,8 +25016,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.DeletionMode = data
 		case "retentionPeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("retentionPeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25147,8 +25023,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RetentionPeriod = data
 		case "streamRetention":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("streamRetention"))
 			data, err := ec.unmarshalOStreamRetentionInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐStreamRetentionᚄ(ctx, v)
 			if err != nil {
@@ -25156,8 +25030,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.StreamRetention = data
 		case "shardStreams":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("shardStreams"))
 			data, err := ec.unmarshalOShardstreamsConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐShardstreamsConfig(ctx, v)
 			if err != nil {
@@ -25165,8 +25037,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.ShardStreams = data
 		case "blockedQueries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blockedQueries"))
 			data, err := ec.unmarshalOBlockedQueryInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐBlockedQueryᚄ(ctx, v)
 			if err != nil {
@@ -25174,8 +25044,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.BlockedQueries = data
 		case "requiredLabels":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requiredLabels"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -25183,8 +25051,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RequiredLabels = data
 		case "requiredNumberLabels":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requiredNumberLabels"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25192,8 +25058,6 @@ func (ec *executionContext) unmarshalInputLokiLimitsInput(ctx context.Context, o
 			}
 			it.RequiredNumberLabels = data
 		case "indexGatewayShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("indexGatewayShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25221,8 +25085,6 @@ func (ec *executionContext) unmarshalInputMatchPolicyAttributeInput(ctx context.
 		}
 		switch k {
 		case "key":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("key"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
@@ -25230,8 +25092,6 @@ func (ec *executionContext) unmarshalInputMatchPolicyAttributeInput(ctx context.
 			}
 			it.Key = data
 		case "value":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("value"))
 			data, err := ec.unmarshalOMap2githubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐWrappedMap(ctx, v)
 			if err != nil {
@@ -25259,8 +25119,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 		}
 		switch k {
 		case "requestRate":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestRate"))
 			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
 			if err != nil {
@@ -25268,8 +25126,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RequestRate = data
 		case "requestBurstSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("requestBurstSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25277,8 +25133,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RequestBurstSize = data
 		case "ingestionRate":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionRate"))
 			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
 			if err != nil {
@@ -25286,8 +25140,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.IngestionRate = data
 		case "ingestionBurstSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionBurstSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25295,8 +25147,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.IngestionBurstSize = data
 		case "acceptHASamples":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("acceptHASamples"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25304,8 +25154,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AcceptHASamples = data
 		case "haClusterLabel":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("haClusterLabel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25313,8 +25161,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.HAClusterLabel = data
 		case "haReplicaLabel":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("haReplicaLabel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25322,8 +25168,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.HAReplicaLabel = data
 		case "haMaxClusters":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("haMaxClusters"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25331,8 +25175,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.HAMaxClusters = data
 		case "dropLabels":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dropLabels"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -25340,8 +25182,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.DropLabels = data
 		case "maxLabelNameLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelNameLength"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25349,8 +25189,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxLabelNameLength = data
 		case "maxLabelValueLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelValueLength"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25358,8 +25196,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxLabelValueLength = data
 		case "maxLabelNamesPerSeries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelNamesPerSeries"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25367,8 +25203,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxLabelNamesPerSeries = data
 		case "maxMetadataLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxMetadataLength"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25376,8 +25210,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxMetadataLength = data
 		case "maxNativeHistogramBuckets":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxNativeHistogramBuckets"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25385,8 +25217,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxNativeHistogramBuckets = data
 		case "creationGracePeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("creationGracePeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25394,8 +25224,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CreationGracePeriod = data
 		case "enforceMetadataMetricName":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("enforceMetadataMetricName"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25403,8 +25231,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.EnforceMetadataMetricName = data
 		case "ingestionTenantShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionTenantShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25412,8 +25238,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.IngestionTenantShardSize = data
 		case "metricRelabelConfigs":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricRelabelConfigs"))
 			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
 			if err != nil {
@@ -25421,8 +25245,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MetricRelabelConfigs = data
 		case "maxGlobalSeriesPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalSeriesPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25430,8 +25252,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalSeriesPerUser = data
 		case "maxGlobalSeriesPerMetric":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalSeriesPerMetric"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25439,8 +25259,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalSeriesPerMetric = data
 		case "maxGlobalMetricsWithMetadataPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalMetricsWithMetadataPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25448,8 +25266,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalMetricsWithMetadataPerUser = data
 		case "maxGlobalMetadataPerMetric":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalMetadataPerMetric"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25457,8 +25273,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalMetadataPerMetric = data
 		case "maxGlobalExemplarsPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalExemplarsPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25466,8 +25280,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalExemplarsPerUser = data
 		case "nativeHistogramsIngestionEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nativeHistogramsIngestionEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25475,8 +25287,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.NativeHistogramsIngestionEnabled = data
 		case "activeSeriesCustomTrackersConfig":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("activeSeriesCustomTrackersConfig"))
 			data, err := ec.unmarshalOStringMap2map(ctx, v)
 			if err != nil {
@@ -25484,8 +25294,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ActiveSeriesCustomTrackersConfig = data
 		case "outOfOrderTimeWindow":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outOfOrderTimeWindow"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25493,8 +25301,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.OutOfOrderTimeWindow = data
 		case "outOfOrderBlocksExternalLabelEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outOfOrderBlocksExternalLabelEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25502,8 +25308,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.OutOfOrderBlocksExternalLabelEnabled = data
 		case "separateMetricsGroupLabel":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("separateMetricsGroupLabel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25511,8 +25315,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.SeparateMetricsGroupLabel = data
 		case "maxChunksPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxChunksPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25520,8 +25322,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxChunksPerQuery = data
 		case "maxFetchedSeriesPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxFetchedSeriesPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25529,8 +25329,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxFetchedSeriesPerQuery = data
 		case "maxFetchedChunkBytesPerQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxFetchedChunkBytesPerQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25538,8 +25336,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxFetchedChunkBytesPerQuery = data
 		case "maxQueryLookback":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryLookback"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25547,8 +25343,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxQueryLookback = data
 		case "maxPartialQueryLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxPartialQueryLength"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25556,8 +25350,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxPartialQueryLength = data
 		case "maxQueryParallelism":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryParallelism"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25565,8 +25357,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxQueryParallelism = data
 		case "maxLabelsQueryLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLabelsQueryLength"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25574,8 +25364,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxLabelsQueryLength = data
 		case "maxCacheFreshness":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxCacheFreshness"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25583,8 +25371,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxCacheFreshness = data
 		case "maxQueriersPerTenant":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueriersPerTenant"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25592,8 +25378,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxQueriersPerTenant = data
 		case "queryShardingTotalShards":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("queryShardingTotalShards"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25601,8 +25385,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.QueryShardingTotalShards = data
 		case "queryShardingMaxShardedQueries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("queryShardingMaxShardedQueries"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25610,8 +25392,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.QueryShardingMaxShardedQueries = data
 		case "queryShardingMaxRegexpSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("queryShardingMaxRegexpSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25619,8 +25399,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.QueryShardingMaxRegexpSizeBytes = data
 		case "splitInstantQueriesByInterval":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("splitInstantQueriesByInterval"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25628,8 +25406,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.SplitInstantQueriesByInterval = data
 		case "QueryIngestersWithin":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("QueryIngestersWithin"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25637,8 +25413,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.QueryIngestersWithin = data
 		case "maxTotalQueryLength":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxTotalQueryLength"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25646,8 +25420,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxTotalQueryLength = data
 		case "resultsCacheTTL":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resultsCacheTTL"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25655,8 +25427,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ResultsCacheTTL = data
 		case "resultsCacheTTLForOutOfOrderTimeWindow":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resultsCacheTTLForOutOfOrderTimeWindow"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25664,8 +25434,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ResultsCacheTTLForOutOfOrderTimeWindow = data
 		case "resultsCacheTTLForCardinalityQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resultsCacheTTLForCardinalityQuery"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25673,8 +25441,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ResultsCacheTTLForCardinalityQuery = data
 		case "resultsCacheTTLForLabelsQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resultsCacheTTLForLabelsQuery"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25682,8 +25448,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ResultsCacheTTLForLabelsQuery = data
 		case "resultsCacheForUnalignedQueryEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resultsCacheForUnalignedQueryEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25691,8 +25455,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.ResultsCacheForUnalignedQueryEnabled = data
 		case "maxQueryExpressionSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxQueryExpressionSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25700,8 +25462,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.MaxQueryExpressionSizeBytes = data
 		case "cardinalityAnalysisEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cardinalityAnalysisEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25709,8 +25469,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CardinalityAnalysisEnabled = data
 		case "labelNamesAndValuesResultsMaxSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("labelNamesAndValuesResultsMaxSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25718,8 +25476,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.LabelNamesAndValuesResultsMaxSizeBytes = data
 		case "labelValuesMaxCardinalityLabelNamesPerRequest":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("labelValuesMaxCardinalityLabelNamesPerRequest"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25727,8 +25483,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.LabelValuesMaxCardinalityLabelNamesPerRequest = data
 		case "rulerEvaluationDelay":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerEvaluationDelay"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25736,8 +25490,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerEvaluationDelay = data
 		case "rulerTenantShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerTenantShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25745,8 +25497,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerTenantShardSize = data
 		case "rulerMaxRulesPerRuleGroup":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerMaxRulesPerRuleGroup"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25754,8 +25504,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerMaxRulesPerRuleGroup = data
 		case "rulerMaxRuleGroupsPerTenant":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerMaxRuleGroupsPerTenant"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25763,8 +25511,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerMaxRuleGroupsPerTenant = data
 		case "rulerRecordingRulesEvaluationEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerRecordingRulesEvaluationEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25772,8 +25518,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerRecordingRulesEvaluationEnabled = data
 		case "rulerAlertingRulesEvaluationEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerAlertingRulesEvaluationEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25781,8 +25525,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerAlertingRulesEvaluationEnabled = data
 		case "rulerSyncRulesOnChangesEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rulerSyncRulesOnChangesEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25790,8 +25532,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.RulerSyncRulesOnChangesEnabled = data
 		case "storeGatewayTenantShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("storeGatewayTenantShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25799,8 +25539,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.StoreGatewayTenantShardSize = data
 		case "compactorBlocksRetentionPeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorBlocksRetentionPeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25808,8 +25546,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorBlocksRetentionPeriod = data
 		case "compactorSplitAndMergeShards":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorSplitAndMergeShards"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25817,8 +25553,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorSplitAndMergeShards = data
 		case "compactorSplitGroups":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorSplitGroups"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25826,8 +25560,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorSplitGroups = data
 		case "compactorTenantShardSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorTenantShardSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25835,8 +25567,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorTenantShardSize = data
 		case "compactorPartialBlockDeletionDelay":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorPartialBlockDeletionDelay"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -25844,8 +25574,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorPartialBlockDeletionDelay = data
 		case "compactorBlockUploadEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorBlockUploadEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25853,8 +25581,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorBlockUploadEnabled = data
 		case "compactorBlockUploadValidationEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorBlockUploadValidationEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25862,8 +25588,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorBlockUploadValidationEnabled = data
 		case "compactorBlockUploadVerifyChunks":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorBlockUploadVerifyChunks"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25871,8 +25595,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorBlockUploadVerifyChunks = data
 		case "compactorBlockUploadMaxBlockSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compactorBlockUploadMaxBlockSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
 			if err != nil {
@@ -25880,8 +25602,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.CompactorBlockUploadMaxBlockSizeBytes = data
 		case "s3SSEType":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("s3SSEType"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25889,8 +25609,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.S3SSEType = data
 		case "s3SSEKMSKeyID":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("s3SSEKMSKeyID"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25898,8 +25616,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.S3SSEKMSKeyID = data
 		case "s3SSEKMSEncryptionContext":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("s3SSEKMSEncryptionContext"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25907,8 +25623,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.S3SSEKMSEncryptionContext = data
 		case "alertmanagerReceiversBlockCIDRNetworks":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerReceiversBlockCIDRNetworks"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -25916,8 +25630,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerReceiversBlockCIDRNetworks = data
 		case "alertmanagerReceiversBlockPrivateAddresses":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerReceiversBlockPrivateAddresses"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -25925,8 +25637,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerReceiversBlockPrivateAddresses = data
 		case "notificationRateLimit":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notificationRateLimit"))
 			data, err := ec.unmarshalOFloat2ᚖfloat64(ctx, v)
 			if err != nil {
@@ -25934,8 +25644,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.NotificationRateLimit = data
 		case "notificationRateLimitPerIntegration":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notificationRateLimitPerIntegration"))
 			data, err := ec.unmarshalOFloatMap2map(ctx, v)
 			if err != nil {
@@ -25943,8 +25651,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.NotificationRateLimitPerIntegration = data
 		case "alertmanagerMaxConfigSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxConfigSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25952,8 +25658,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerMaxConfigSizeBytes = data
 		case "alertmanagerMaxTemplatesCount":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxTemplatesCount"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25961,8 +25665,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerMaxTemplatesCount = data
 		case "alertmanagerMaxTemplateSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxTemplateSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25970,8 +25672,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerMaxTemplateSizeBytes = data
 		case "alertmanagerMaxDispatcherAggregationGroups":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxDispatcherAggregationGroups"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25979,8 +25679,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerMaxDispatcherAggregationGroups = data
 		case "alertmanagerMaxAlertsCount":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxAlertsCount"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -25988,8 +25686,6 @@ func (ec *executionContext) unmarshalInputMimirLimitsInput(ctx context.Context, 
 			}
 			it.AlertmanagerMaxAlertsCount = data
 		case "alertmanagerMaxAlertsSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerMaxAlertsSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26017,8 +25713,6 @@ func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj int
 		}
 		switch k {
 		case "first":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26026,8 +25720,6 @@ func (ec *executionContext) unmarshalInputNameInput(ctx context.Context, obj int
 			}
 			it.First = data
 		case "last":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26055,8 +25747,6 @@ func (ec *executionContext) unmarshalInputNotifierBasicAuthInput(ctx context.Con
 		}
 		switch k {
 		case "username":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26064,8 +25754,6 @@ func (ec *executionContext) unmarshalInputNotifierBasicAuthInput(ctx context.Con
 			}
 			it.Username = data
 		case "password":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26093,8 +25781,6 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 		}
 		switch k {
 		case "basicAuth":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("basicAuth"))
 			data, err := ec.unmarshalONotifierBasicAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierBasicAuth(ctx, v)
 			if err != nil {
@@ -26102,8 +25788,6 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 			}
 			it.BasicAuth = data
 		case "headerAuth":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("headerAuth"))
 			data, err := ec.unmarshalONotifierHeaderAuthInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierHeaderAuth(ctx, v)
 			if err != nil {
@@ -26111,8 +25795,6 @@ func (ec *executionContext) unmarshalInputNotifierConfigInput(ctx context.Contex
 			}
 			it.HeaderAuth = data
 		case "tls":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tls"))
 			data, err := ec.unmarshalONotifierTLSClientConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierTLSClientConfig(ctx, v)
 			if err != nil {
@@ -26140,8 +25822,6 @@ func (ec *executionContext) unmarshalInputNotifierHeaderAuthInput(ctx context.Co
 		}
 		switch k {
 		case "type":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26149,8 +25829,6 @@ func (ec *executionContext) unmarshalInputNotifierHeaderAuthInput(ctx context.Co
 			}
 			it.Type = data
 		case "credentials":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("credentials"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26158,8 +25836,6 @@ func (ec *executionContext) unmarshalInputNotifierHeaderAuthInput(ctx context.Co
 			}
 			it.Credentials = data
 		case "credentialsFile":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("credentialsFile"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26187,8 +25863,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 		}
 		switch k {
 		case "certPath":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("certPath"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26196,8 +25870,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.CertPath = data
 		case "keyPath":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("keyPath"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26205,8 +25877,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.KeyPath = data
 		case "caPath":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("caPath"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26214,8 +25884,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.CAPath = data
 		case "serverName":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("serverName"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26223,8 +25891,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.ServerName = data
 		case "insecureSkipVerify":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("insecureSkipVerify"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26232,8 +25898,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.InsecureSkipVerify = data
 		case "cipherSuites":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cipherSuites"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26241,8 +25905,6 @@ func (ec *executionContext) unmarshalInputNotifierTLSClientConfigInput(ctx conte
 			}
 			it.CipherSuites = data
 		case "minVersion":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minVersion"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26270,8 +25932,6 @@ func (ec *executionContext) unmarshalInputOAuth2ClientInput(ctx context.Context,
 		}
 		switch k {
 		case "clientId":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientId"))
 			data, err := ec.unmarshalNID2string(ctx, v)
 			if err != nil {
@@ -26299,8 +25959,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 		}
 		switch k {
 		case "mimir":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mimir"))
 			data, err := ec.unmarshalOMimirLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMimirLimitsInput(ctx, v)
 			if err != nil {
@@ -26308,8 +25966,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 			}
 			it.Mimir = data
 		case "loki":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loki"))
 			data, err := ec.unmarshalOLokiLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLokiLimitsInput(ctx, v)
 			if err != nil {
@@ -26317,8 +25973,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantLimitsInput(ctx con
 			}
 			it.Loki = data
 		case "tempo":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tempo"))
 			data, err := ec.unmarshalOTempoLimitsInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐTempoLimitsInput(ctx, v)
 			if err != nil {
@@ -26346,8 +26000,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 		}
 		switch k {
 		case "users":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("users"))
 			data, err := ec.unmarshalOUserInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐUserInputᚄ(ctx, v)
 			if err != nil {
@@ -26355,8 +26007,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 			}
 			it.Users = data
 		case "groups":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("groups"))
 			data, err := ec.unmarshalOGroupInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐGroupInputᚄ(ctx, v)
 			if err != nil {
@@ -26364,8 +26014,6 @@ func (ec *executionContext) unmarshalInputObservabilityTenantPermissionBindingsI
 			}
 			it.Groups = data
 		case "oauth2Clients":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("oauth2Clients"))
 			data, err := ec.unmarshalOOAuth2ClientInput2ᚕᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚋgraphᚋmodelᚐOAuth2ClientInputᚄ(ctx, v)
 			if err != nil {
@@ -26393,8 +26041,6 @@ func (ec *executionContext) unmarshalInputPolicyMatchInput(ctx context.Context, 
 		}
 		switch k {
 		case "matchType":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("matchType"))
 			data, err := ec.unmarshalOMatchType2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchType(ctx, v)
 			if err != nil {
@@ -26402,8 +26048,6 @@ func (ec *executionContext) unmarshalInputPolicyMatchInput(ctx context.Context, 
 			}
 			it.MatchType = data
 		case "attributes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("attributes"))
 			data, err := ec.unmarshalOMatchPolicyAttributeInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐMatchPolicyAttributeᚄ(ctx, v)
 			if err != nil {
@@ -26431,8 +26075,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 		}
 		switch k {
 		case "sourceLabels":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceLabels"))
 			data, err := ec.unmarshalOLabelName2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐLabelNameᚄ(ctx, v)
 			if err != nil {
@@ -26440,8 +26082,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.SourceLabels = data
 		case "separator":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("separator"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26449,8 +26089,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.Separator = data
 		case "regex":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("regex"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26458,8 +26096,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.Regex = data
 		case "modulus":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("modulus"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -26467,8 +26103,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.Modulus = data
 		case "targetLabel":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("targetLabel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26476,8 +26110,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.TargetLabel = data
 		case "replacement":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("replacement"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26485,8 +26117,6 @@ func (ec *executionContext) unmarshalInputRelabelConfigInput(ctx context.Context
 			}
 			it.Replacement = data
 		case "action":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("action"))
 			data, err := ec.unmarshalORelabelAction2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelAction(ctx, v)
 			if err != nil {
@@ -26514,8 +26144,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 		}
 		switch k {
 		case "alertmanagerURL":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerURL"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
@@ -26523,8 +26151,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.AlertmanagerURL = data
 		case "alertmanagerDiscovery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerDiscovery"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26532,8 +26158,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.AlertmanagerDiscovery = data
 		case "alertmanagerRefreshInterval":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanagerRefreshInterval"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26541,8 +26165,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.AlertmanagerRefreshInterval = data
 		case "alertmanangerEnableV2API":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertmanangerEnableV2API"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26550,8 +26172,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.AlertmanangerEnableV2API = data
 		case "alertRelabelConfigs":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("alertRelabelConfigs"))
 			data, err := ec.unmarshalORelabelConfigInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐRelabelConfigᚄ(ctx, v)
 			if err != nil {
@@ -26559,8 +26179,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.AlertRelabelConfigs = data
 		case "notificationQueueCapacity":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notificationQueueCapacity"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26568,8 +26186,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.NotificationQueueCapacity = data
 		case "notificationTimeout":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notificationTimeout"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26577,8 +26193,6 @@ func (ec *executionContext) unmarshalInputRulerAlertManagerConfigInput(ctx conte
 			}
 			it.NotificationTimeout = data
 		case "notifier":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notifier"))
 			data, err := ec.unmarshalONotifierConfigInput2ᚖgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐNotifierConfig(ctx, v)
 			if err != nil {
@@ -26606,8 +26220,6 @@ func (ec *executionContext) unmarshalInputShardstreamsConfigInput(ctx context.Co
 		}
 		switch k {
 		case "enabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("enabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26615,8 +26227,6 @@ func (ec *executionContext) unmarshalInputShardstreamsConfigInput(ctx context.Co
 			}
 			it.Enabled = data
 		case "loggingEnabled":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("loggingEnabled"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26624,8 +26234,6 @@ func (ec *executionContext) unmarshalInputShardstreamsConfigInput(ctx context.Co
 			}
 			it.LoggingEnabled = data
 		case "desiredRate":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("desiredRate"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -26653,8 +26261,6 @@ func (ec *executionContext) unmarshalInputStreamRetentionInput(ctx context.Conte
 		}
 		switch k {
 		case "period":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("period"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26662,8 +26268,6 @@ func (ec *executionContext) unmarshalInputStreamRetentionInput(ctx context.Conte
 			}
 			it.Period = data
 		case "priority":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("priority"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26671,8 +26275,6 @@ func (ec *executionContext) unmarshalInputStreamRetentionInput(ctx context.Conte
 			}
 			it.Priority = data
 		case "selector":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("selector"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26700,8 +26302,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 		}
 		switch k {
 		case "ingestionRateStrategy":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionRateStrategy"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
@@ -26709,8 +26309,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.IngestionRateStrategy = data
 		case "ingestionRateLimitBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionRateLimitBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26718,8 +26316,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.IngestionRateLimitBytes = data
 		case "ingestionBurstSizeBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ingestionBurstSizeBytes"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26727,8 +26323,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.IngestionBurstSizeBytes = data
 		case "maxLocalTracesPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxLocalTracesPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26736,8 +26330,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MaxLocalTracesPerUser = data
 		case "maxGlobalTracesPerUser":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxGlobalTracesPerUser"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26745,8 +26337,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MaxGlobalTracesPerUser = data
 		case "forwarders":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("forwarders"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -26754,8 +26344,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.Forwarders = data
 		case "metricsGeneratorRingSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorRingSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26763,8 +26351,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorRingSize = data
 		case "metricsGeneratorProcessors":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessors"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -26772,8 +26358,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessors = data
 		case "metricsGeneratorMaxActiveSeries":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorMaxActiveSeries"))
 			data, err := ec.unmarshalOUInt2ᚖuint32(ctx, v)
 			if err != nil {
@@ -26781,8 +26365,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorMaxActiveSeries = data
 		case "metricsGeneratorCollectionInterval":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorCollectionInterval"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26790,8 +26372,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorCollectionInterval = data
 		case "metricsGeneratorDisableCollection":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorDisableCollection"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26799,8 +26379,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorDisableCollection = data
 		case "metricsGeneratorForwarderQueueSize":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorForwarderQueueSize"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26808,8 +26386,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorForwarderQueueSize = data
 		case "metricsGeneratorForwarderWorkers":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorForwarderWorkers"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26817,8 +26393,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorForwarderWorkers = data
 		case "metricsGeneratorProcessorServiceGraphsHistogramBuckets":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorServiceGraphsHistogramBuckets"))
 			data, err := ec.unmarshalOFloat2ᚕfloat64(ctx, v)
 			if err != nil {
@@ -26826,8 +26400,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorServiceGraphsHistogramBuckets = data
 		case "metricsGeneratorProcessorServiceGraphsDimensions":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorServiceGraphsDimensions"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -26835,8 +26407,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorServiceGraphsDimensions = data
 		case "metricsGeneratorProcessorServiceGraphsPeerAttributes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorServiceGraphsPeerAttributes"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -26844,8 +26414,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorServiceGraphsPeerAttributes = data
 		case "metricsGeneratorProcessorServiceGraphsEnableClientServerPrefix":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorServiceGraphsEnableClientServerPrefix"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26853,8 +26421,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorServiceGraphsEnableClientServerPrefix = data
 		case "metricsGeneratorProcessorSpanMetricsHistogramBuckets":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsHistogramBuckets"))
 			data, err := ec.unmarshalOFloat2ᚕfloat64(ctx, v)
 			if err != nil {
@@ -26862,8 +26428,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsHistogramBuckets = data
 		case "metricsGeneratorProcessorSpanMetricsDimensions":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsDimensions"))
 			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
@@ -26871,8 +26435,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsDimensions = data
 		case "metricsGeneratorProcessorSpanMetricsIntrinsicDimensions":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsIntrinsicDimensions"))
 			data, err := ec.unmarshalOBoolMap2map(ctx, v)
 			if err != nil {
@@ -26880,8 +26442,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsIntrinsicDimensions = data
 		case "metricsGeneratorProcessorSpanMetricsFilterPolicies":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsFilterPolicies"))
 			data, err := ec.unmarshalOFilterPolicyInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐFilterPolicyᚄ(ctx, v)
 			if err != nil {
@@ -26889,8 +26449,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsFilterPolicies = data
 		case "metricsGeneratorProcessorSpanMetricsDimensionMappings":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsDimensionMappings"))
 			data, err := ec.unmarshalODimensionMappingsInput2ᚕgithubᚗcomᚋtraceshieldᚋtraceᚑshieldᚑcontrollerᚋapiᚋobservabilityᚋv1alpha1ᚐDimensionMappingsᚄ(ctx, v)
 			if err != nil {
@@ -26898,8 +26456,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsDimensionMappings = data
 		case "metricsGeneratorProcessorSpanMetricsEnableTargetInfo":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorSpanMetricsEnableTargetInfo"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
@@ -26907,8 +26463,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorSpanMetricsEnableTargetInfo = data
 		case "metricsGeneratorProcessorLocalBlocksMaxLiveTraces":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksMaxLiveTraces"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -26916,8 +26470,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksMaxLiveTraces = data
 		case "metricsGeneratorProcessorLocalBlocksMaxBlockDuration":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksMaxBlockDuration"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26925,8 +26477,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksMaxBlockDuration = data
 		case "metricsGeneratorProcessorLocalBlocksMaxBlockBytes":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksMaxBlockBytes"))
 			data, err := ec.unmarshalOUInt2ᚖuint64(ctx, v)
 			if err != nil {
@@ -26934,8 +26484,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksMaxBlockBytes = data
 		case "metricsGeneratorProcessorLocalBlocksFlushCheckPeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksFlushCheckPeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26943,8 +26491,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksFlushCheckPeriod = data
 		case "metricsGeneratorProcessorLocalBlocksTraceIdlePeriod":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksTraceIdlePeriod"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26952,8 +26498,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksTraceIdlePeriod = data
 		case "metricsGeneratorProcessorLocalBlocksCompleteBlockTimeout":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("metricsGeneratorProcessorLocalBlocksCompleteBlockTimeout"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26961,8 +26505,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MetricsGeneratorProcessorLocalBlocksCompleteBlockTimeout = data
 		case "blockRetention":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("blockRetention"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26970,8 +26512,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.BlockRetention = data
 		case "maxBytesPerTagValuesQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxBytesPerTagValuesQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26979,8 +26519,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MaxBytesPerTagValuesQuery = data
 		case "maxBlocksPerTagValuesQuery":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxBlocksPerTagValuesQuery"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -26988,8 +26526,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MaxBlocksPerTagValuesQuery = data
 		case "maxSearchDuration":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxSearchDuration"))
 			data, err := ec.unmarshalODuration2ᚖk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐDuration(ctx, v)
 			if err != nil {
@@ -26997,8 +26533,6 @@ func (ec *executionContext) unmarshalInputTempoLimitsInput(ctx context.Context, 
 			}
 			it.MaxSearchDuration = data
 		case "maxBytesPerTrace":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxBytesPerTrace"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
@@ -27026,8 +26560,6 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 		}
 		switch k {
 		case "id":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
@@ -27035,8 +26567,6 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 			}
 			it.ID = data
 		case "email":
-			var err error
-
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
