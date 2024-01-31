@@ -5,6 +5,7 @@ load('ext://restart_process', 'docker_build_with_restart')
 helm_repo('bitnami', 'https://charts.bitnami.com/bitnami')
 helm_repo('ory', 'https://k8s.ory.sh/helm/charts')
 helm_repo('grafana-helm', 'https://grafana.github.io/helm-charts')
+helm_repo('prometheus-community', 'https://prometheus-community.github.io/helm-charts')
 
 ## Grafana
 
@@ -44,7 +45,7 @@ helm_resource(
     ],
   deps=['./dev/kratos_values.yaml', './dev/configs/kratos/'],
   labels=['kratos'],
-  resource_deps=['ory', 'postgres-kratos'],
+  resource_deps=['ory', 'postgresql-kratos'],
 )
 
 # needed so we get the kratos logs and not the courier logs. TODO: figure out how to show both
@@ -99,7 +100,7 @@ helm_resource(
     ],
   deps=['./dev/hydra_values.yaml'],
   labels=['hydra'],
-  resource_deps=['ory', 'postgres-hydra'],
+  resource_deps=['ory', 'postgresql-hydra'],
 )
 
 ## Keto
@@ -124,7 +125,7 @@ helm_resource(
     ],
   deps=['./dev/keto_values.yaml'],
   labels=['keto'],
-  resource_deps=['ory', 'postgres-keto'],
+  resource_deps=['ory', 'postgresql-keto'],
 )
 
 configmap_create(
@@ -206,5 +207,20 @@ helm_resource(
     ],
   deps=['./dev/mimir_values.yaml'],
   labels=['mimir'],
-  resource_deps=['grafana-helm', 'minio'],
+  resource_deps=['grafana-helm', 'minio', 'kube-prometheus-stack'],
+)
+
+# Kube-Prometheus-Stack
+
+helm_resource(
+  'kube-prometheus-stack',
+  'prometheus-community/kube-prometheus-stack',
+  namespace='monitoring',
+  flags=[
+    '--create-namespace',
+    '--values=./dev/kube_prom_values.yaml',
+    ],
+  deps=['./dev/kube_prom_values.yaml'],
+  labels=['kube-prometheus-stack'],
+  resource_deps=['prometheus-community'],
 )

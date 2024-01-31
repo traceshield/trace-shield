@@ -1,22 +1,6 @@
 minio:
   enabled: false
 
-ingester:
-  replicas: 1
-  zoneAwareReplication:
-    enabled: false
-
-querier:
-  replicas: 1
-
-query_scheduler:
-  replicas: 1
-
-store_gateway:
-  replicas: 1
-  zoneAwareReplication:
-    enabled: false
-
 mimir:
   structuredConfig:
     tenant_federation:
@@ -66,13 +50,13 @@ mimir:
 metaMonitoring:
   dashboards:
     enabled: true
-  # serviceMonitor:
-  #   enabled: true
-  #   clusterLabel: internal
-  # prometheusRule:
-  #   enabled: true
-  #   mimirAlerts: true
-  #   mimirRules: true
+  serviceMonitor:
+    enabled: true
+    clusterLabel: internal
+  prometheusRule:
+    enabled: true
+    mimirAlerts: true
+    mimirRules: true
   # grafanaAgent:
   #   enabled: true
   #   installOperator: true

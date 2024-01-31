@@ -1,0 +1,35 @@
+grafana:
+  enabled: false
+prometheus:
+  agentMode: true
+  prometheusSpec:
+    externalLabels:
+      cluster: internal
+    remoteWrite:
+    - name: internal-mimir
+      url: http://mimir-nginx.mimir.svc.cluster.local/api/v1/push
+      sendExemplars: true
+      sendNativeHistograms: true
+      headers:
+        X-Scope-OrgID: internal
+    remoteWriteDashboards: true
+    podMonitorNamespaceSelector: {}
+      # any: true
+    podMonitorSelector: {}
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleNamespaceSelector: {}
+      # any: true
+    ruleSelector: {}
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+      # any: true
+    serviceMonitorSelector: {}
+    serviceMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    probeSelector: {}
+    probeNamespaceSelector: {}
+      # any: true
+    scrapeConfigSelectorNilUsesHelmValues: false
+    scrapeConfigSelector: {}
+    scrapeConfigNamespaceSelector: {}
+      # any: true
