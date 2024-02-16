@@ -18,7 +18,7 @@ COPY . .
 RUN yarn build
 
 # nginx state for serving content
-FROM nginxinc/nginx-unprivileged:1.25.1-alpine
+FROM nginxinc/nginx-unprivileged:1.25.4-alpine
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html
 # Copy static assets from builder stage
