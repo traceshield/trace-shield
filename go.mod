@@ -12,7 +12,7 @@ require (
 	github.com/ravilushqa/otelgqlgen v0.15.0
 	github.com/rs/cors v1.9.0
 	github.com/traceshield/trace-shield-controller v0.3.27
-	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vektah/gqlparser/v2 v2.5.14
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.47.0
 	go.opentelemetry.io/contrib/propagators/b3 v1.22.0
