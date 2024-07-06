@@ -10,7 +10,7 @@ require (
 	github.com/ory/keto/proto v0.11.1-alpha.0
 	github.com/ory/kratos-client-go v0.13.1
 	github.com/ravilushqa/otelgqlgen v0.15.0
-	github.com/rs/cors v1.9.0
+	github.com/rs/cors v1.11.0
 	github.com/traceshield/trace-shield-controller v0.3.27
 	github.com/vektah/gqlparser/v2 v2.5.11
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.47.0
