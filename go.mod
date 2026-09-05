@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/99designs/gqlgen v0.17.43
 	github.com/Yamashou/gqlgenc v0.16.2
-	github.com/go-chi/chi/v5 v5.0.11
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-logr/logr v1.4.1
 	github.com/ory/keto/proto v0.11.1-alpha.0
 	github.com/ory/kratos-client-go v0.13.1
